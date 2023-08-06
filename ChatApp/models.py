@@ -3,176 +3,222 @@ from util.DB import DB
 
 
 class dbConnect:
-    def createUser(uid, name, email, password):
+    """
+    ユーザー
+    """
+    def createUser(user_id, user_name, email, password):
         try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
-            sql = "INSERT INTO users (uid, user_name, email, password) VALUES (%s, %s, %s, %s);"
-            cur.execute(sql, (uid, name, email, password))
-            conn.commit()
-        except Exception as e:
-            print(e + 'が発生しています')
+            connection = DB.getConnection()
+            cursor = connection.cursor()
+            sql = "INSERT INTO users (id, user_name, email, password) VALUES (%s, %s, %s, %s);"
+            cursor.execute(sql, (user_id, user_name, email, password))
+            connection.commit()
+        except Exception as err:
+            print(err + 'が発生しています')
             abort(500)
         finally:
-            cur.close()
+            cursor.close()
 
-
-    def getUser(email):
+    # getUser -> getUserById, getUserByEmail に拡張
+    def getUserById(user_id):
         try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
-            sql = "SELECT * FROM users WHERE email=%s;"
-            cur.execute(sql, (email))
-            user = cur.fetchone()
+            connection = DB.getConnection()
+            cursor = connection.cursor()
+            sql = "SELECT * FROM users WHERE id=%s;"
+            cursor.execute(sql, (user_id))
+            user = cursor.fetchone()
             return user
-        except Exception as e:
-            print(e + 'が発生しています')
+        except Exception as err:
+            print(err + 'が発生しています')
             abort(500)
         finally:
-            cur.close()
+            cursor.close()
 
+    def getUserByEmail(email):
+        try:
+            connection = DB.getConnection()
+            cursor = connection.cursor()
+            sql = "SELECT * FROM users WHERE email=%s;"
+            cursor.execute(sql, (email))
+            user = cursor.fetchone()
+            return user
+        except Exception as err:
+            print(err + 'が発生しています')
+            abort(500)
+        finally:
+            cursor.close()
 
+    """
+    フレンド
+    """
+    def createFriendRequest(sender_id, receiver_id):
+        try:
+            connection = DB.getConnection()
+            cursor = connection.cursor()
+
+            # 既に申請済みかどうかをチェックするクエリ
+            sql = "SELECT * FROM friend_requests WHERE sender_id = %s AND receiver_id = %s"
+            cursor.execute(sql, (sender_id, receiver_id))
+            existing_request = cursor.fetchone()
+
+            # 既に申請済みの場合は'duplicate'を返す
+            if existing_request:
+                return 'duplicate'
+
+            # 申請が重複していない場合、新しいフレンド申請を作成する
+            sql = "INSERT INTO friend_requests(sender_id, receiver_id) VALUES(%s, %s)"
+            cursor.execute(sql, (sender_id, receiver_id))
+            connection.commit()
+
+            # 成功した場合は'success'を返す
+            return 'success'
+
+        except Exception as err:
+            print(err, 'が発生しています')
+            # エラーが発生した場合は'error'を返す
+            return 'error'
+        finally:
+            cursor.close()
+
+    """
+    チャンネル
+    """
     def getChannelAll():
         try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
+            connection = DB.getConnection()
+            cursor = connection.cursor()
             sql = "SELECT * FROM channels;"
-            cur.execute(sql)
-            channels = cur.fetchall()
+            cursor.execute(sql)
+            channels = cursor.fetchall()
             return channels
-        except Exception as e:
-            print(e + 'が発生しています')
+        except Exception as err:
+            print(err + 'が発生しています')
             abort(500)
         finally:
-            cur.close()
+            cursor.close()
 
-
-    def getChannelById(cid):
+    def getChannelById(channel_id):
         try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
+            connection = DB.getConnection()
+            cursor = connection.cursor()
             sql = "SELECT * FROM channels WHERE id=%s;"
-            cur.execute(sql, (cid))
-            channel = cur.fetchone()
+            cursor.execute(sql, (channel_id))
+            channel = cursor.fetchone()
             return channel
-        except Exception as e:
-            print(e + 'が発生しています')
+        except Exception as err:
+            print(err + 'が発生しています')
             abort(500)
         finally:
-            cur.close()
-
+            cursor.close()
 
     def getChannelByName(channel_name):
         try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
-            sql = "SELECT * FROM channels WHERE name=%s;"
-            cur.execute(sql, (channel_name))
-            channel = cur.fetchone()
+            connection = DB.getConnection()
+            cursor = connection.cursor()
+            sql = "SELECT * FROM channels WHERE channel_name=%s;"
+            cursor.execute(sql, (channel_name))
+            channel = cursor.fetchone()
             return channel
-        except Exception as e:
-            print(e + 'が発生しています')
+        except Exception as err:
+            print(err + 'が発生しています')
             abort(500)
         finally:
-            cur.close()
+            cursor.close()
 
-
-    def addChannel(uid, newChannelName, newChannelDescription):
+    def addChannel(user_id, newChannelName, newChannelDescription):
         try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
-            sql = "INSERT INTO channels (uid, name, abstract) VALUES (%s, %s, %s);"
-            cur.execute(sql, (uid, newChannelName, newChannelDescription))
-            conn.commit()
-        except Exception as e:
-            print(e + 'が発生しています')
+            connection = DB.getConnection()
+            cursor = connection.cursor()
+            sql = "INSERT INTO channels (id, name, abstract) VALUES (%s, %s, %s);"
+            cursor.execute(
+                sql, (user_id, newChannelName, newChannelDescription))
+            connection.commit()
+        except Exception as err:
+            print(err + 'が発生しています')
             abort(500)
         finally:
-            cur.close()
-
+            cursor.close()
 
     def getChannelByName(channel_name):
         try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
-            sql = "SELECT * FROM channels WHERE name=%s;"
-            cur.execute(sql, (channel_name))
-            channel = cur.fetchone()
-        except Exception as e:
-            print(e + 'が発生しました')
+            connection = DB.getConnection()
+            cursor = connection.cursor()
+            sql = "SELECT * FROM channels WHERE channel_name=%s;"
+            cursor.execute(sql, (channel_name))
+            channel = cursor.fetchone()
+        except Exception as err:
+            print(err + 'が発生しました')
             abort(500)
         finally:
-            cur.close()
+            cursor.close()
             return channel
 
-
-    def updateChannel(uid, newChannelName, newChannelDescription, cid):
+    def updateChannel(user_id, newChannelName, newChannelDescription, channel_id):
         try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
+            connection = DB.getConnection()
+            cursor = connection.cursor()
             sql = "UPDATE channels SET uid=%s, name=%s, abstract=%s WHERE id=%s;"
-            cur.execute(sql, (uid, newChannelName, newChannelDescription, cid))
-            conn.commit()
-        except Exception as e:
-            print(e + 'が発生しました')
+            cursor.execute(sql, (user_id, newChannelName,
+                           newChannelDescription, channel_id))
+            connection.commit()
+        except Exception as err:
+            print(err + 'が発生しました')
             abort(500)
         finally:
-            cur.close()
+            cursor.close()
 
-
-    #deleteチャンネル関数
-    def deleteChannel(cid):
+    def deleteChannel(channel_id):
         try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
+            connection = DB.getConnection()
+            cursor = connection.cursor()
             sql = "DELETE FROM channels WHERE id=%s;"
-            cur.execute(sql, (cid))
-            conn.commit()
-        except Exception as e:
-            print(e + 'が発生しています')
+            cursor.execute(sql, (channel_id))
+            connection.commit()
+        except Exception as err:
+            print(err + 'が発生しています')
             abort(500)
         finally:
-            cur.close()
+            cursor.close()
 
-
-    def getMessageAll(cid):
+    """
+    メッセージ
+    """
+    def getMessageAll(channel_id):
         try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
+            connection = DB.getConnection()
+            cursor = connection.cursor()
             sql = "SELECT id,u.uid, user_name, message FROM messages AS m INNER JOIN users AS u ON m.uid = u.uid WHERE cid = %s;"
-            cur.execute(sql, (cid))
-            messages = cur.fetchall()
+            cursor.execute(sql, (channel_id))
+            messages = cursor.fetchall()
             return messages
-        except Exception as e:
-            print(e + 'が発生しています')
+        except Exception as err:
+            print(err + 'が発生しています')
             abort(500)
         finally:
-            cur.close()
+            cursor.close()
 
-
-    def createMessage(uid, cid, message):
+    def createMessage(user_id, channel_id, message):
         try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
+            connection = DB.getConnection()
+            cursor = connection.cursor()
             sql = "INSERT INTO messages(uid, cid, message) VALUES(%s, %s, %s)"
-            cur.execute(sql, (uid, cid, message))
-            conn.commit()
-        except Exception as e:
-            print(e + 'が発生しています')
+            cursor.execute(sql, (user_id, channel_id, message))
+            connection.commit()
+        except Exception as err:
+            print(err + 'が発生しています')
             abort(500)
         finally:
-            cur.close()
-
+            cursor.close()
 
     def deleteMessage(message_id):
         try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
+            connection = DB.getConnection()
+            cursor = connection.cursor()
             sql = "DELETE FROM messages WHERE id=%s;"
-            cur.execute(sql, (message_id))
-            conn.commit()
-        except Exception as e:
-            print(e + 'が発生しています')
+            cursor.execute(sql, (message_id))
+            connection.commit()
+        except Exception as err:
+            print(err + 'が発生しています')
             abort(500)
         finally:
-            cur.close()
+            cursor.close()

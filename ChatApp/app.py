@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template, session, flash, abort
+from flask import Flask, request, redirect, render_template, session, flash, abort, jsonify
 from datetime import timedelta
 import hashlib
 import uuid
@@ -11,7 +11,12 @@ app.secret_key = uuid.uuid4().hex
 app.permanent_session_lifetime = timedelta(days=30)
 
 
+"""
+ユーザー認証
+"""
 # サインアップページの表示
+
+
 @app.route('/signup')
 def signup():
     return render_template('registration/signup.html')
@@ -20,30 +25,30 @@ def signup():
 # サインアップ処理
 @app.route('/signup', methods=['POST'])
 def userSignup():
-    name = request.form.get('name')
+    user_name = request.form.get('name')
     email = request.form.get('email')
     password1 = request.form.get('password1')
     password2 = request.form.get('password2')
 
     pattern = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
 
-    if name == '' or email == '' or password1 == '' or password2 == '':
+    if user_name == '' or email == '' or password1 == '' or password2 == '':
         flash('空のフォームがあるようです')
     elif password1 != password2:
         flash('二つのパスワードの値が違っています')
     elif re.match(pattern, email) is None:
         flash('正しいメールアドレスの形式ではありません')
     else:
-        uid = uuid.uuid4()
+        user_id = uuid.uuid4()
         password = hashlib.sha256(password1.encode('utf-8')).hexdigest()
-        DBuser = dbConnect.getUser(email)
+        DBuser = dbConnect.getUserByEmail(email)
 
         if DBuser != None:
             flash('既に登録されているようです')
         else:
-            dbConnect.createUser(uid, name, email, password)
-            UserId = str(uid)
-            session['uid'] = UserId
+            dbConnect.createUser(user_id, user_name, email, password)
+            UserId = str(user_id)
+            session['user_id'] = UserId
             return redirect('/')
     return redirect('/signup')
 
@@ -63,7 +68,7 @@ def userLogin():
     if email == '' or password == '':
         flash('空のフォームがあるようです')
     else:
-        user = dbConnect.getUser(email)
+        user = dbConnect.getUserByEmail(email)
         if user is None:
             flash('このユーザーは存在しません')
         else:
@@ -71,7 +76,7 @@ def userLogin():
             if hashPassword != user["password"]:
                 flash('パスワードが間違っています！')
             else:
-                session['uid'] = user["uid"]
+                session['user_id'] = user["id"]
                 return redirect('/')
     return redirect('/login')
 
@@ -83,29 +88,84 @@ def logout():
     return redirect('/login')
 
 
-# チャンネル一覧ページの表示
+# ホーム画面の表示
 @app.route('/')
 def index():
-    uid = session.get("uid")
-    if uid is None:
+    user_id = session.get("user_id")
+    if user_id is None:
         return redirect('/login')
     else:
         channels = dbConnect.getChannelAll()
         channels.reverse()
-    return render_template('index.html', channels=channels, uid=uid)
+    return render_template('index.html', channels=channels, user_id=user_id)
 
 
+"""
+フレンド
+"""
+
+
+# Emailでユーザーを検索　（フレンド申請用）
+@app.route('/search_user', methods=['POST'])
+def search_user():
+    # user_id = session.get("user_id")
+    # if user_id is None:
+    #     return redirect('/login')
+    email = request.form.get('email')
+    user = dbConnect.getUserByEmail(email)
+    if not user:
+        # ユーザーが存在しない場合は空のuser_infoを返す
+        user_info = {
+            'user_id': '',
+            'user_name': '',
+            'email': '',
+        }
+    else:
+        user_info = {
+            'user_id': user['id'],
+            'user_name': user['user_name'],
+            'email': user['email'],
+        }
+    return jsonify(user_info), 200  # JSONでユーザー情報を返却
+
+
+# フレンド申請を作成する
+@app.route('/friend_request', methods=['POST'])
+def friend_request():
+    # user_id = session.get("user_id")
+    # if user_id is None:
+    #     return redirect('/login')
+    data = request.json
+    sender_id = data.get('sender_id')
+    receiver_id = data.get('receiver_id')
+    if sender_id is None or receiver_id is None:
+        return jsonify({'error': 'Invalid request data. Missing sender_id or receiver_id.'}), 400
+    result = dbConnect.createFriendRequest(sender_id, receiver_id)
+
+    if result == 'success':
+        return jsonify({'message': 'フレンド申請を送りました'}), 200
+    elif result == 'duplicate':
+        return jsonify({'message': '既に申請済みです'}), 422
+    elif result == 'error':
+        return jsonify({'message': '申請に失敗しました'}), 422
+
+
+"""
+チャンネル
+"""
 # チャンネルの追加
+
+
 @app.route('/', methods=['POST'])
 def add_channel():
-    uid = session.get('uid')
-    if uid is None:
+    user_id = session.get('user_id')
+    if user_id is None:
         return redirect('/login')
     channel_name = request.form.get('channelTitle')
     channel = dbConnect.getChannelByName(channel_name)
     if channel == None:
         channel_description = request.form.get('channelDescription')
-        dbConnect.addChannel(uid, channel_name, channel_description)
+        dbConnect.addChannel(user_id, channel_name, channel_description)
         return redirect('/')
     else:
         error = '既に同じ名前のチャンネルが存在しています'
@@ -115,79 +175,89 @@ def add_channel():
 # チャンネルの更新
 @app.route('/update_channel', methods=['POST'])
 def update_channel():
-    uid = session.get("uid")
-    if uid is None:
+    user_id = session.get("user_id")
+    if user_id is None:
         return redirect('/login')
 
-    cid = request.form.get('cid')
+    channel_id = request.form.get('channel_id')
     channel_name = request.form.get('channelTitle')
     channel_description = request.form.get('channelDescription')
 
-    dbConnect.updateChannel(uid, channel_name, channel_description, cid)
-    return redirect('/detail/{cid}'.format(cid=cid))
+    dbConnect.updateChannel(user_id, channel_name,
+                            channel_description, channel_id)
+    return redirect(f'/detail/{channel_id}')
 
 
 # チャンネルの削除
-@app.route('/delete/<cid>')
-def delete_channel(cid):
-    uid = session.get("uid")
-    if uid is None:
+@app.route('/delete/<channel_id>')
+def delete_channel(channel_id):
+    user_id = session.get("user_id")
+    if user_id is None:
         return redirect('/login')
     else:
-        channel = dbConnect.getChannelById(cid)
-        if channel["uid"] != uid:
+        channel = dbConnect.getChannelById(channel_id)
+        if channel["user_id"] != user_id:
             flash('チャンネルは作成者のみ削除可能です')
             return redirect('/')
         else:
-            dbConnect.deleteChannel(cid)
+            dbConnect.deleteChannel(channel_id)
             channels = dbConnect.getChannelAll()
             return redirect('/')
 
 
 # チャンネル詳細ページの表示
-@app.route('/detail/<cid>')
-def detail(cid):
-    uid = session.get("uid")
-    if uid is None:
+@app.route('/detail/<channel_id>')
+def detail(channel_id):
+    user_id = session.get("user_id")
+    if user_id is None:
         return redirect('/login')
 
-    cid = cid
-    channel = dbConnect.getChannelById(cid)
-    messages = dbConnect.getMessageAll(cid)
+    channel = dbConnect.getChannelById(channel_id)
+    messages = dbConnect.getMessageAll(channel_id)
 
-    return render_template('detail.html', messages=messages, channel=channel, uid=uid)
+    return render_template('detail.html', messages=messages, channel=channel, user_id=user_id)
 
 
+"""
+メッセージ
+"""
 # メッセージの投稿
+
+
 @app.route('/message', methods=['POST'])
 def add_message():
-    uid = session.get("uid")
-    if uid is None:
+    user_id = session.get("user_id")
+    if user_id is None:
         return redirect('/login')
 
     message = request.form.get('message')
-    cid = request.form.get('cid')
+    channel_id = request.form.get('channel_id')
 
     if message:
-        dbConnect.createMessage(uid, cid, message)
+        dbConnect.createMessage(user_id, channel_id, message)
 
-    return redirect('/detail/{cid}'.format(cid=cid))
+    return redirect(f'/detail/{channel_id}')
 
 
 # メッセージの削除
 @app.route('/delete_message', methods=['POST'])
 def delete_message():
-    uid = session.get("uid")
-    if uid is None:
+    user_id = session.get("user_id")
+    if user_id is None:
         return redirect('/login')
 
     message_id = request.form.get('message_id')
-    cid = request.form.get('cid')
+    channel_id = request.form.get('channel_id')
 
     if message_id:
         dbConnect.deleteMessage(message_id)
 
-    return redirect('/detail/{cid}'.format(cid=cid))
+    return redirect(f'/detail/{channel_id}')
+
+
+"""
+エラーハンドリング
+"""
 
 
 @app.errorhandler(404)
