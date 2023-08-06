@@ -51,7 +51,7 @@ VALUES
 
 CREATE TABLE channels (
   id INT NOT NULL AUTO_INCREMENT,
-  name varchar(255),
+  channel_name varchar(255),
   abstract TEXT,
   type INT NOT NULL, -- 0: DM, 1: グループ, 2: オープン
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -59,7 +59,7 @@ CREATE TABLE channels (
   PRIMARY KEY (id)
 );
 
-INSERT INTO channels (name, abstract, type)
+INSERT INTO channels (channel_name, abstract, type)
 VALUES
   ('プライベートチャット', 'ユーザー1とユーザー2のプライベートチャット', 0),
   ('グループチャット', 'ユーザー1、ユーザー2、ユーザー3のグループチャット', 1),
