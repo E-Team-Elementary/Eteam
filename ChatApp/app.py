@@ -150,6 +150,30 @@ def friend_request():
         return jsonify({'message': '申請に失敗しました'}), 422
 
 
+# ログインユーザーに対して、友達申請一覧を取得し、友達申請一覧画面(仮)に遷移
+'''
+ todo:
+ フレンド一覧を取得する時、本来はGetメソッドを指定する予定だが、テスト用にPOSTも指定している
+ セッション周りのコメントを外す、POSTを指定しない
+'''
+@app.route("/friend_request_list", methods=['GET','POST'])
+def friend_request_list():
+    #uid = session.get("uid")
+    #if uid is None:
+    #    return redirect("/login")
+    receiver_id = request.form.get('id')
+
+    # ログインユーザーの友達申請一覧を一覧を取得
+    friend_request_list = dbConnect.getFriendReqList(receiver_id)
+
+    return jsonify(friend_request_list)
+
+'''
+    return render_template(
+        "/friend-request-list.html", friend_request_list=friend_request_list
+    )
+'''
+
 """
 チャンネル
 """

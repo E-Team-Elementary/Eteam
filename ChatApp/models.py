@@ -80,6 +80,27 @@ class dbConnect:
         finally:
             cursor.close()
 
+    def getFriendReqList(receiver_id):
+        try:
+            conn = DB.getConnection()
+            cur = conn.cursor()
+
+            # 友達申請一覧を取得するクエリ
+            sql = "SELECT fr.sender_id,u1.user_name as sender_name,fr.created_at \
+                FROM friend_requests fr INNER JOIN users u1 on sender_id = u1.id \
+                WHERE fr.receiver_id=%s;"
+            
+            cur.execute(sql, (receiver_id))
+            friend_requests = cur.fetchall()
+
+            return friend_requests
+        
+        except Exception as e:
+            print(e + "が発生しています")
+            abort(500)
+        finally:
+            cur.close()
+
     """
     チャンネル
     """
