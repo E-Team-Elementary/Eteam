@@ -12,7 +12,7 @@ app.permanent_session_lifetime = timedelta(days=30)
 
 
 """
-ユーザー認証
+ユーザー認証 
 """
 # サインアップページの表示
 
@@ -89,15 +89,15 @@ def logout():
 
 
 # ホーム画面の表示
-@app.route('/')
-def index():
-    user_id = session.get("user_id")
-    if user_id is None:
-        return redirect('/login')
-    else:
-        channels = dbConnect.getChannelAll()
-        channels.reverse()
-    return render_template('index.html', channels=channels, user_id=user_id)
+# @app.route('/')
+# def index():
+#     user_id = session.get("user_id")
+#     if user_id is None:
+#         return redirect('/login')
+#     else:
+#         channels = dbConnect.getChannelAll()
+#         channels.reverse()
+#     return render_template('index.html', channels=channels, user_id=user_id)
 
 
 """
@@ -156,10 +156,12 @@ def friend_request():
  フレンド一覧を取得する時、本来はGetメソッドを指定する予定だが、テスト用にPOSTも指定している
  セッション周りのコメントを外す、POSTを指定しない
 '''
-@app.route("/friend_request_list", methods=['GET','POST'])
+
+
+@app.route("/friend_request_list", methods=['GET', 'POST'])
 def friend_request_list():
-    #uid = session.get("uid")
-    #if uid is None:
+    # uid = session.get("uid")
+    # if uid is None:
     #    return redirect("/login")
     receiver_id = request.form.get('id')
 
@@ -167,6 +169,7 @@ def friend_request_list():
     friend_request_list = dbConnect.getFriendReqList(receiver_id)
 
     return jsonify(friend_request_list)
+
 
 '''
     return render_template(
@@ -177,9 +180,45 @@ def friend_request_list():
 """
 チャンネル
 """
+
+# ホーム画面の表示
+
+
+@app.route('/')
+def home():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect('/login')
+    else:
+        channels = dbConnect.getDMChannels(user_id)
+    return render_template('home.html', channels=channels, user_id=user_id)
+
+# グループ画面の表示
+
+
+@app.route('/group')
+def group():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect('/login')
+    else:
+        channels = dbConnect.getDMChannels(user_id)
+    return render_template('group.html', channels=channels, user_id=user_id)
+
+# Public画面の表示
+
+
+@app.route('/public')
+def public():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect('/login')
+    else:
+        channels = dbConnect.getDMChannels(user_id)
+    return render_template('public.html', channels=channels, user_id=user_id)
+
+
 # チャンネルの追加
-
-
 @app.route('/', methods=['POST'])
 def add_channel():
     user_id = session.get('user_id')
