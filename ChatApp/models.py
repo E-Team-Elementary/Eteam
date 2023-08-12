@@ -146,43 +146,13 @@ class dbConnect:
         finally:
             cursor.close()
 
-    def getDMChannels(user_id):
+    def getChannels(user_id, channnel_type):
         try:
             connection = DB.getConnection()
             cursor = connection.cursor()
             sql = "SELECT c.* FROM channels as c INNER JOIN channel_users as cu ON c.id = cu.channel_id\
-                    WHERE cu.user_id = %s AND c.type = 0 ORDER BY c.updated_at DESC;"
-            cursor.execute(sql, (user_id))
-            channel = cursor.fetchall()
-            return channel
-        except Exception as err:
-            print(err + "が発生しています")
-            abort(500)
-        finally:
-            cursor.close()
-
-    def getGroupChannels(user_id):
-        try:
-            connection = DB.getConnection()
-            cursor = connection.cursor()
-            sql = "SELECT c.* FROM channels as c INNER JOIN channel_users as cu ON c.id = cu.channel_id\
-                    WHERE cu.user_id = %s AND c.type = 1 ORDER BY c.updated_at DESC;"
-            cursor.execute(sql, (user_id))
-            channel = cursor.fetchall()
-            return channel
-        except Exception as err:
-            print(err + "が発生しています")
-            abort(500)
-        finally:
-            cursor.close()
-
-    def getPublicChannels(user_id):
-        try:
-            connection = DB.getConnection()
-            cursor = connection.cursor()
-            sql = "SELECT c.* FROM channels as c INNER JOIN channel_users as cu ON c.id = cu.channel_id\
-                    WHERE cu.user_id = %s AND c.type = 2 ORDER BY c.updated_at DESC;"
-            cursor.execute(sql, (user_id))
+                    WHERE cu.user_id = %s AND c.type = %s ORDER BY c.updated_at DESC;"
+            cursor.execute(sql, (user_id, channnel_type))
             channel = cursor.fetchall()
             return channel
         except Exception as err:
