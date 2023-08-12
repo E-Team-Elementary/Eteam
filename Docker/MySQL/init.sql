@@ -53,7 +53,7 @@ CREATE TABLE channels (
   id INT NOT NULL AUTO_INCREMENT,
   channel_name varchar(255),
   abstract TEXT,
-  type INT NOT NULL, -- 0: DM, 1: グループ, 2: オープン
+  type INT NOT NULL, -- 0: DM, 1: グループ, 2: Public
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
