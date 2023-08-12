@@ -89,12 +89,12 @@ class dbConnect:
             sql = "SELECT fr.sender_id,u1.user_name as sender_name,fr.created_at \
                 FROM friend_requests fr INNER JOIN users u1 on sender_id = u1.id \
                 WHERE fr.receiver_id=%s;"
-            
+
             cur.execute(sql, (receiver_id))
             friend_requests = cur.fetchall()
 
             return friend_requests
-        
+
         except Exception as e:
             print(e + "が発生しています")
             abort(500)
@@ -142,6 +142,51 @@ class dbConnect:
             return channel
         except Exception as err:
             print(err + 'が発生しています')
+            abort(500)
+        finally:
+            cursor.close()
+
+    def getDMChannels(user_id):
+        try:
+            connection = DB.getConnection()
+            cursor = connection.cursor()
+            sql = "SELECT c.* FROM channels as c INNER JOIN channel_users as cu ON c.id = cu.channel_id\
+                    WHERE cu.user_id = %s AND c.type = 0 ORDER BY c.updated_at DESC;"
+            cursor.execute(sql, (user_id))
+            channel = cursor.fetchall()
+            return channel
+        except Exception as err:
+            print(err + "が発生しています")
+            abort(500)
+        finally:
+            cursor.close()
+
+    def getGroupChannels(user_id):
+        try:
+            connection = DB.getConnection()
+            cursor = connection.cursor()
+            sql = "SELECT c.* FROM channels as c INNER JOIN channel_users as cu ON c.id = cu.channel_id\
+                    WHERE cu.user_id = %s AND c.type = 1 ORDER BY c.updated_at DESC;"
+            cursor.execute(sql, (user_id))
+            channel = cursor.fetchall()
+            return channel
+        except Exception as err:
+            print(err + "が発生しています")
+            abort(500)
+        finally:
+            cursor.close()
+
+    def getPublicChannels(user_id):
+        try:
+            connection = DB.getConnection()
+            cursor = connection.cursor()
+            sql = "SELECT c.* FROM channels as c INNER JOIN channel_users as cu ON c.id = cu.channel_id\
+                    WHERE cu.user_id = %s AND c.type = 2 ORDER BY c.updated_at DESC;"
+            cursor.execute(sql, (user_id))
+            channel = cursor.fetchall()
+            return channel
+        except Exception as err:
+            print(err + "が発生しています")
             abort(500)
         finally:
             cursor.close()
