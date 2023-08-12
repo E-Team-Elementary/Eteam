@@ -1,0 +1,104 @@
+.request-modal{
+    position: fixed;
+    z-index: 999;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    margin: 0;
+    background: rgba(0, 0, 0, 0);
+}
+
+.accept-group{
+    position: fixed;
+    z-index: 99;
+    left: 33%;
+    top: 20%;
+    height: 60%;
+    width: 35%;
+    /* From https://css.glass */
+    background: rgba(255, 255, 255, 0.01);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 1);
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+}
+
+.request-person{
+        color: #133D64;
+        font-size: 60px;
+        margin-top: 30px;
+        background-color: transparent;
+}
+
+.request-container{
+    width: 100%;
+    height: 50%;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    align-content: center;
+
+}
+
+.friend-request{
+    width: 80%;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: end;
+    align-items: end;
+    overflow: auto;
+    padding: 10px 0 10px 10px;
+}
+
+.friend-request :focus{
+    outline: none;
+}
+
+.request-all{
+    width: 100%;
+    overflow: auto;
+    text-align: start;
+    border: none;
+}
+
+.all-button{
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.accept-button{
+    display: inline-block;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 20px;
+    color: white;
+    background-color: #133D64;
+    border: 1px solid white;
+    cursor: pointer;
+    display: block;
+}
+
+.deny-button{
+    display: inline-block;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 20px;
+    color: white;
+    background-color: #d82c0a;
+    border: 1px solid white;
+    cursor: pointer;
+    display: block;
+}

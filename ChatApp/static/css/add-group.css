@@ -1,0 +1,130 @@
+.group-modal{
+    position: fixed;
+    z-index: 999;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    margin: 0;
+    background: rgba(0, 0, 0, 0);
+}
+
+.add-group{
+    position: fixed;
+    z-index: 99;
+    left: 33%;
+    top: 20%;
+    height: 60%;
+    width: 35%;
+    /* From https://css.glass */
+    background: rgba(255, 255, 255, 0.01);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 1);
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+}
+
+.add-people{
+    color: #133D64;
+    font-size: 60px;
+    margin-top: 30px;
+    background-color: transparent;
+}
+
+.group-name{
+    width: 100%;
+    height: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-name {
+    font-size: 20px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 60%;
+    height: 80%;
+    border: none;
+    border-bottom: 1px solid #133D64;
+    outline: none;
+    background-color: transparent;
+}
+
+
+.input-name input[type="text"] {
+    flex-grow: 1;
+    padding: 0.7rem 0 0.7rem 0.8rem;
+    border: 1px solid #133D64;
+    border-radius: 1.5rem;
+    width: 70%;
+        /* From https://css.glass */
+    background: rgba(255, 255, 255, 0.78);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 1.5rem;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.input-name input:focus {
+    outline: 0;
+    box-shadow: 0 0 5px #e1e1e1, 0 0 10px #e1e1e1, 0 0 15px #e1e1e1;
+    background-color: transparent;
+}
+
+.create-container{
+    width: 100%;
+    height: 50%;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    align-content: center;
+}
+
+.friend-list{
+    width: 80%;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: end;
+    align-items: end;
+    overflow: auto;
+    padding: 10px 0 10px 10px;
+}
+
+.friend-list :focus{
+    outline: none;
+}
+
+.friend-all{
+    width: 100%;
+    overflow: auto;
+    text-align: start;
+    border: none;
+    background-color: transparent;
+}
+
+.friend-all option{
+    background-color: transparent;
+}
+
+
+.create-button{
+    display: inline-block;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 20px;
+    color: white;
+    background-color: #133D64;
+    border: 1px solid white;
+    cursor: pointer;
+}
