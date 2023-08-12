@@ -1,10 +1,12 @@
 /* 全てのCSSをまとめてエクスポート */
 
-@import "color.css";
-@import "base.css";
-@import "main.css";
-@import "detail.css";
-@import "registration.css";
-@import "sidebar.css";
-@import "mobile-header.css";
-@import "modal.css";
+
+
+@import "normalize.css";
+@import "../../bootstrap-icons-1.10.5/font/bootstrap-icons.css";
+@import "add-friend.css";
+@import "add-group.css";
+@import "accept-friends.css";
+
+
+

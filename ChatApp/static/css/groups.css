@@ -19,8 +19,9 @@ header{
     font-size: 20px;
     background-color: #133D64;
     display: flex;
-
 }
+
+
 
 .return{
     width: 8%;
@@ -144,11 +145,11 @@ header{
     border: none;
 }
 
-.bi-person-fill-add{
+.people{
     font-size: 60px;
     text-align: center;
     margin-right: 0px;
-    color: white;
+    border: none;
 }
 
 .request-friends{
@@ -225,6 +226,7 @@ header{
     width: 50%;
     flex-grow: 1;
     border-bottom: solid 2px #e2e2e2;
+    border-left: #e2e2e2;
     display: flex;
     align-items: end;
     justify-content: center;
@@ -232,7 +234,7 @@ header{
 
 footer{
     height: 15%;
-    width: 100vw;
+    width: 100%;
     background-color: white;
     display: flex;
     align-items: center;
@@ -250,7 +252,7 @@ footer{
     margin: 0;   
 }
 
-.bi-person-fill{
+.bi-people-fill{
     color: white;
     background-color: #133D64;
 }
