@@ -190,7 +190,8 @@ def home():
     if user_id is None:
         return redirect('/login')
     else:
-        channels = dbConnect.getDMChannels(user_id, 0)
+        channel_type = 0
+        channels = dbConnect.getDMChannels(user_id, channel_type)
     return render_template('home.html', channels=channels, user_id=user_id)
 
 # グループ画面の表示
@@ -202,7 +203,8 @@ def group():
     if user_id is None:
         return redirect('/login')
     else:
-        channels = dbConnect.getGroupChannels(user_id, 1)
+        channel_type = 1
+        channels = dbConnect.getGroupChannels(user_id, channel_type)
     return render_template('group.html', channels=channels, user_id=user_id)
 
 # Public画面の表示
@@ -214,7 +216,8 @@ def public():
     if user_id is None:
         return redirect('/login')
     else:
-        channels = dbConnect.getPublicChannels(user_id, 2)
+        channel_type = 2
+        channels = dbConnect.getPublicChannels(user_id, channel_type)
     return render_template('public.html', channels=channels, user_id=user_id)
 
 
