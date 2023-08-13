@@ -207,6 +207,59 @@ def group():
         channels = dbConnect.getGroupChannels(user_id, channel_type)
     return render_template('group.html', channels=channels, user_id=user_id)
 
+# フレンド名による友達一覧の表示（グループ作成モーダル用）
+def get_friends_list():
+    user_id = session.get("user_id")
+    friends_list = dbConnect.getFriendsList(user_id,user_id)
+    # if not friends:
+    #     # ユーザーが存在しない場合は空のfriends_infoを返す
+    #     friends_info = {
+    #         "friend_id": "",
+    #         "user_name": "",
+    #     }
+    # else:
+    #     friends_info = {
+    #         "friend_id": friends["friend_id"],
+    #         "user_name": friends["user_name"],
+    #     }
+
+    return jsonify(friends_list), 200  # JSONでユーザー情報を返却
+
+'''
+    return render_template(
+        "group.html", friends_list=friend_List
+    )
+'''
+# グループ作成
+@app.route("/group_create", methods=["POST"])
+def create_group():
+    user_id = session.get("user_id")
+    # if user_id is None:
+    #     return redirect("/login")
+
+    data = request.json
+    newChannelName = data.get("newChannelName")
+
+    channel = dbConnect.getChannelByName(newChannelName)
+    if channel == None:
+        newChannelDescription = data.get("newChannelDescription")
+        newChannelType = "1"
+        dbConnect.add_group_Channel(
+            newChannelName, newChannelDescription, newChannelType
+        )
+        channel_id = data.get("channel_id")
+        adminUid = user_id
+        adminRole = "0"
+        dbConnect.add_group_Channel_adminUser(channel_id, adminUid, adminRole)
+        memberRole = "1"
+        friends = data.get("friends")
+        for friend_id in friends:
+            dbConnect.add_group_Channel_Users(channel_id, friend_id, memberRole)
+        return redirect("/group")
+    else:
+        error = "既に同じ名前のチャンネルが存在しています"
+        return render_template("error/error.html", error_message=error)
+
 # Public画面の表示
 
 
