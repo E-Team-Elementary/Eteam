@@ -236,7 +236,8 @@ def group():
     else:
         channel_type = 1
         channels = dbConnect.getChannels(user_id, channel_type)
-    return render_template("home/group.html", channels=channels, user_id=user_id)
+
+    return render_template("home/groups.html", channels=channels, user_id=user_id)
 
 
 # フレンド名による友達一覧の表示（グループ作成モーダル用）
