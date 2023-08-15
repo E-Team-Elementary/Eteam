@@ -21,11 +21,6 @@ app.secret_key = uuid.uuid4().hex
 app.permanent_session_lifetime = timedelta(days=30)
 
 """
-定数定義
-"""
-
-
-"""
 ユーザー認証 
 """
 # サインアップページの表示
@@ -195,6 +190,22 @@ def friend_request_list():
         "/friend-request-list.html", friend_request_list=friend_request_list
     )
 """
+
+
+# 友達申請承認・拒否処理
+@app.route("/friend_request_result", methods=["POST"])
+def friend_request_result():
+    # uid = session.get("uid")
+    # if uid is None:
+    #    return redirect("/login")
+    receiver_id = request.form.get("id")
+    result = request.form.get("result")
+
+    if result == 0:
+        print("OK")
+    else:
+        print("")
+
 
 """
 チャンネル
@@ -388,6 +399,7 @@ def detail(channel_id):
 # メッセージの投稿
 
 
+# chat部分で投稿された内容をmessagesテーブルに挿入
 @app.route("/message", methods=["POST"])
 def add_message():
     user_id = session.get("user_id")
@@ -398,9 +410,27 @@ def add_message():
     channel_id = request.form.get("channel_id")
 
     if message:
-        dbConnect.createMessage(user_id, channel_id, message)
+        dbConnect.createMessage(user_id, channel_id, message, TYPE.CHAT_MESSAGE)
 
-    return redirect(f"/detail/{channel_id}")
+    return "OK"
+    # return redirect(f"/detail/{channel_id}")
+
+
+# note部分で投稿された内容をmessagesテーブルに挿入
+@app.route("/note", methods=["POST"])
+def add_note():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/login")
+
+    note = request.form.get("note")
+    channel_id = request.form.get("channel_id")
+
+    if note:
+        dbConnect.createMessage(user_id, channel_id, note, TYPE.NOTE_MESSAGE)
+
+    return "OK"
+    # return redirect(f"/detail/{channel_id}")
 
 
 # メッセージの削除

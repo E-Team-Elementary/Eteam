@@ -310,12 +310,12 @@ class dbConnect:
         finally:
             cursor.close()
 
-    def createMessage(user_id, channel_id, message):
+    def createMessage(user_id, channel_id, message, type):
         try:
             connection = DB.getConnection()
             cursor = connection.cursor()
-            sql = "INSERT INTO messages(uid, cid, message) VALUES(%s, %s, %s)"
-            cursor.execute(sql, (user_id, channel_id, message))
+            sql = "INSERT INTO messages(channel_id, user_id, message, type) VALUES(%s, %s, %s, %s)"
+            cursor.execute(sql, (user_id, channel_id, message, type))
             connection.commit()
         except Exception as err:
             print(err + "が発生しています")
