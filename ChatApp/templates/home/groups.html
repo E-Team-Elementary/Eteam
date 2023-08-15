@@ -56,42 +56,46 @@
     </div>
     
     <footer>
-        <button class="exit"><i class="bi bi-three-dots"></i></button>
+        <a class="exit" href="../login/login.html"><i class="bi bi-three-dots"></i></a>
 
 
         <span class="room_kinds">
             <a href="home.html" class="bi bi-person-fill"></a>    
             <a href="groups.html" class="bi bi-people-fill"></a>
-            <a class="bi bi-globe-asia-australia"></a>
+            <a href="public.html" class="bi bi-globe-asia-australia"></a>
         </span>
     </footer>
 
     <div id="group-modal" class="group-modal">
-        <div id="add-group" class="add-group">
-            <div><i class="bi bi-people-fill add-people"></i></div>
-            <h2>グループ作成</h2>
-            <div class="create-container">
-                <form class="group-name">
-                    <input class="input-name" type="text" placeholder="Group Name">
-                </form>
-                <div  class="friend-list">
-                    <select name="friend-all" class="friend-all" multiple size="10">
-                        <option>aaaaaaaa</option>
-                        <option>aaaaaaaa</option>
-                        <option>aaaaaaaa</option>
-                        <option>aaaaaaaa</option>
-                        <option>aaaaaaaa</option>
-                        <option>aaaaaaaa</option>
-                        <option>aaaaaaaa</option>
-                    </select>
-                    <button type="submit" class="create-button">作成</button>
+        <div class="group-create">
+            <div id="add-group" class="add-group">
+                <div class="group-modal-header"><i class="bi bi-people-fill add-people"></i>
+                    <h2>グループ作成</h2>
+                </div>
+                <div class="create-container">
+                    <form class="group-name">
+                        <input class="input-name" type="text" placeholder="Group Name">
+                        <input type="text" class="group-description" placeholder="Group Description">
+                    </form>
+                    <div  class="friend-list">
+                        <select name="friend-all" class="friend-all" multiple size="10">
+                            <option>aaaaaaaa</option>
+                            <option>aaaaaaaa</option>
+                            <option>aaaaaaaa</option>
+                            <option>aaaaaaaa</option>
+                            <option>aaaaaaaa</option>
+                            <option>aaaaaaaa</option>
+                            <option>aaaaaaaa</option>
+                        </select>
+                        <button type="submit" class="create-button">作成</button>
+                    </div>
                 </div>
             </div>
-        </div>    
+        </div>
     </div>
 
     <div id="request-modal" class="request-modal">
-        <div id="accept-group" class="add-group">
+        <div id="accept-group" class="accept-group">
             <div><i class="bi bi-person-fill request-person"></i></div>
             <h2>フレンド申請一覧</h2>
             <div class="request-container">

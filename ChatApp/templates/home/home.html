@@ -42,28 +42,29 @@
     
             <div class="content">
                 <div class="talk">
+                    <div class="talk-area" id="talk-area"></div>
                     <div class="input-area">
-                        <textarea type="text" class="talk-input" wrap="soft"></textarea>
-                        <button class="send-button"><i class="bi bi-send-fill"></i></button>
+                        <textarea type="text" class="talk-input" id="talk-input" wrap="soft"></textarea>
+                        <button class="send-button" id="send-talk-button"><i class="bi bi-send-fill"></i></button>
                     </div>
                 </div>
                 <div class="note">
-                    <div class="input-area">
+                    <form class="input-area"> 
                         <textarea type="text" class="talk-input" wrap="soft"></textarea>
                         <button class="send-button"><i class="bi bi-send-fill"></i></button>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
         
         <footer>
-            <button class="exit"><i class="bi bi-three-dots"></i></button>
+            <a class="exit" href="../login/login.html"><i class="bi bi-three-dots"></i></a>
     
     
             <span class="room_kinds">
                 <a href="home.html" class="bi bi-person-fill"></a>    
                 <a href="groups.html" class="bi bi-people-fill"></i>
-                <a class="bi bi-globe-asia-australia"></a>
+                <a href="public.html" class="bi bi-globe-asia-australia"></a>
             </span>
         </footer>
 
@@ -95,7 +96,7 @@
         </div>
 
         <div id="request-modal" class="request-modal">
-            <div id="accept-group" class="add-group">
+            <div id="accept-group" class="accept-group">
                 <div><i class="bi bi-person-fill request-person"></i></div>
                 <h2>フレンド申請一覧</h2>
                 <div class="request-container">
@@ -122,6 +123,7 @@
 
         <script type='text/javascript' async src="../../static/js/modalJs/add-friend.js"></script>
         <script type='text/javascript' async src="../../static/js/modalJs/accept-friend.js" ></script>
+        <script type='text/javascript' async src="../../static/js/sendMassageJs/send-talk-massage.js"></script>
 
 
 
