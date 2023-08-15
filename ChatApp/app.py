@@ -236,7 +236,7 @@ def group():
     else:
         channel_type = 1
         channels = dbConnect.getChannels(user_id, channel_type)
-    return render_template("group.html", channels=channels, user_id=user_id)
+    return render_template("home/group.html", channels=channels, user_id=user_id)
 
 
 # フレンド名による友達一覧の表示（グループ作成モーダル用）
@@ -265,37 +265,58 @@ def get_friends_list():
         "group.html", friends_list=friend_List
     )
 """
+
+
 # グループ作成
+
+"""
+ todo:
+ セッション周りのコメントを外す、リダイレクト先を指定する
+ 複数選択されたフレンドをどう取得できるのかを確認したい
+ 現在は配列のパラメータを渡したいからjsonでpostされたパラメータを受け取っている
+"""
 
 
 @app.route("/group_create", methods=["POST"])
 def create_group():
-    user_id = session.get("user_id")
+    # user_id = session.get("user_id")
     # if user_id is None:
     #     return redirect("/login")
+    # user_id = request.form.get("user_id")
 
     data = request.json
-    newChannelName = data.get("newChannelName")
 
-    channel = dbConnect.getChannelByName(newChannelName)
+    user_id = data.get("user_id")
+
+    # channel_name = request.form.get("channelTitle")
+    channel_name = data.get("channelTitle")
+
+    channel = dbConnect.getChannelByName(channel_name)
     if channel == None:
-        newChannelDescription = data.get("newChannelDescription")
-        newChannelType = "1"
-        dbConnect.add_group_Channel(
-            newChannelName, newChannelDescription, newChannelType
+        # channel_description = request.form.get("channelDescription")
+        channel_description = data.get("channelDescription")
+
+        # チャンネル追加処理
+        channel_id = dbConnect.addChannelGetId(
+            channel_name, channel_description, TYPE.GROUP_CHAT
         )
-        channel_id = data.get("channel_id")
-        adminUid = user_id
-        adminRole = "0"
-        dbConnect.add_group_Channel_adminUser(channel_id, adminUid, adminRole)
-        memberRole = "1"
+
+        # チャンネル管理者登録
+        dbConnect.addChannelUser(channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
+
+        # チャンネルメンバー登録
+        # friends = request.form.get("friends")
         friends = data.get("friends")
         for friend_id in friends:
-            dbConnect.add_group_Channel_Users(channel_id, friend_id, memberRole)
-        return redirect("/group")
+            dbConnect.addChannelUser(
+                channel_id[0]["current_id"], friend_id, TYPE.CHAT_MEMBER
+            )
+        return "ok"
+        # return redirect("/group")
     else:
         error = "既に同じ名前のチャンネルが存在しています"
-        return render_template("error/error.html", error_message=error)
+        # return render_template("error/error.html", error_message=error)
+        return error
 
 
 # Public画面の表示
@@ -309,7 +330,7 @@ def public():
     else:
         channel_type = 2
         channels = dbConnect.getChannels(user_id, channel_type)
-    return render_template("public.html", channels=channels, user_id=user_id)
+    return render_template("home/public.html", channels=channels, user_id=user_id)
 
 
 # チャンネルの追加
@@ -400,34 +421,29 @@ def detail(channel_id):
 
 
 # chat部分で投稿された内容をmessagesテーブルに挿入
-@app.route("/message", methods=["POST"])
+"""
+ todo:
+ セッション周りのコメントを外す、リダイレクト先を指定する
+"""
+
+
+@app.route("/post_message", methods=["POST"])
 def add_message():
-    user_id = session.get("user_id")
-    if user_id is None:
-        return redirect("/login")
+    # user_id = session.get("user_id")
+    # if user_id is None:
+    #    return redirect("/login")
+    user_id = request.form.get("user_id")
 
     message = request.form.get("message")
     channel_id = request.form.get("channel_id")
+    type = request.form.get("message_type")
 
+    # messageとnoteで処理を分ける
     if message:
-        dbConnect.createMessage(user_id, channel_id, message, TYPE.CHAT_MESSAGE)
-
-    return "OK"
-    # return redirect(f"/detail/{channel_id}")
-
-
-# note部分で投稿された内容をmessagesテーブルに挿入
-@app.route("/note", methods=["POST"])
-def add_note():
-    user_id = session.get("user_id")
-    if user_id is None:
-        return redirect("/login")
-
-    note = request.form.get("note")
-    channel_id = request.form.get("channel_id")
-
-    if note:
-        dbConnect.createMessage(user_id, channel_id, note, TYPE.NOTE_MESSAGE)
+        if type == 0:
+            dbConnect.createMessage(user_id, channel_id, message, TYPE.CHAT_MESSAGE)
+        else:
+            dbConnect.createMessage(user_id, channel_id, message, TYPE.NOTE_MESSAGE)
 
     return "OK"
     # return redirect(f"/detail/{channel_id}")
