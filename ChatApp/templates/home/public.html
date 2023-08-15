@@ -76,13 +76,13 @@
         </div>
         
         <footer>
-            <a class="exit" href="../login/login.html"><i class="bi bi-three-dots"></i></a>
+            <a class="exit" href="{{ url_for('login') }}"><i class="bi bi-three-dots"></i></a>
     
     
             <span class="room_kinds">
-                <a href="home.html" class="bi bi-person-fill"></a>    
-                <a href="groups.html" class="bi bi-people-fill"></i>
-                <a href="public.html" class="bi bi-globe-asia-australia"></a>
+                <a href="{{ url_for('home') }}" class="bi bi-person-fill"></a>    
+                <a href="{{ url_for('group') }}" class="bi bi-people-fill"></i>
+                <a href="{{ url_for('public') }}" class="bi bi-globe-asia-australia"></a>
             </span>
         </footer>
 
