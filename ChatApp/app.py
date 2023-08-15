@@ -14,10 +14,15 @@ import uuid
 import re
 
 from models import dbConnect
+from util.TYPE import TYPE
 
 app = Flask(__name__)
 app.secret_key = uuid.uuid4().hex
 app.permanent_session_lifetime = timedelta(days=30)
+
+"""
+定数定義
+"""
 
 
 """
@@ -297,20 +302,37 @@ def public():
 
 
 # チャンネルの追加
-@app.route("/", methods=["POST"])
+"""
+ todo:
+ セッション周りのコメントを外す、リダイレクト先を指定する
+"""
+
+
+@app.route("/public", methods=["POST"])
 def add_channel():
-    user_id = session.get("user_id")
-    if user_id is None:
-        return redirect("/login")
+    # user_id = session.get("user_id")
+    # if user_id is None:
+    #    return redirect("/login")
+    user_id = request.form.get("user_id")
     channel_name = request.form.get("channelTitle")
     channel = dbConnect.getChannelByName(channel_name)
     if channel == None:
         channel_description = request.form.get("channelDescription")
-        dbConnect.addChannel(user_id, channel_name, channel_description)
-        return redirect("/")
+
+        # チャンネル追加処理
+        channel_id = dbConnect.addChannelGetId(
+            channel_name, channel_description, TYPE.PUBLIC_CHAT
+        )
+        # チャンネルユーザー登録処理
+        dbConnect.addChannelUser(channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
+
+        return str(channel_id[0]["current_id"])
+        # return redirect("/")
+
     else:
         error = "既に同じ名前のチャンネルが存在しています"
-        return render_template("error/error.html", error_message=error)
+        return error
+        # return render_template("error/error.html", error_message=error)
 
 
 # チャンネルの更新
