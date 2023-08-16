@@ -31,8 +31,17 @@
     <div class="container">
         <div class="sidebar">
             <div class="friends-list">
-                <span class="test-friend"></span>
-                <span class="test-friend"></span>
+                {% if channels|length > 0 %} {% for channels in channels %}
+                <a class="test-friend" href="~"
+                  ><span class="test-friend-moji"
+                    >{{ channels.channel_name }}</span
+                  ></a
+                >
+                {% endfor %} {% else %}
+                <a class="test-friend" href="~"
+                  ><span class="test-friend-moji">まだ友達はいません</span></a
+                >
+                {% endif %}
             </div>
             <div class="friends-content"> 
                 <button id="add-group" class="plus-friend"><i class="bi bi-people-fill people"></i></button>
@@ -69,26 +78,26 @@
     <div id="group-modal" class="group-modal">
         <div class="group-create">
             <div id="add-group" class="add-group">
-                <div class="group-modal-header"><i class="bi bi-people-fill add-people"></i>
-                    <h2>グループ作成</h2>
+                <div class="group-modal-header"><i class="bi bi-people-fill add-people add-people-head"></i>
+                    <h2 class="add-people-head">グループ作成</h2>
                 </div>
                 <div class="create-container">
-                    <form class="group-name">
-                        <input class="input-name" type="text" placeholder="Group Name">
-                        <input type="text" class="group-description" placeholder="Group Description">
-                    </form>
-                    <div  class="friend-list">
-                        <select name="friend-all" class="friend-all" multiple size="10">
-                            <option>aaaaaaaa</option>
-                            <option>aaaaaaaa</option>
-                            <option>aaaaaaaa</option>
-                            <option>aaaaaaaa</option>
-                            <option>aaaaaaaa</option>
-                            <option>aaaaaaaa</option>
-                            <option>aaaaaaaa</option>
-                        </select>
+                    <form class="group-name" action="/group_create" method="POST">
+                        <input class="input-name" type="text" placeholder="Group Name" name="channelTitle"">
+                        <input type="text" class="input-name" placeholder="Group Description" name="channelDescription">
+                        <div  class="friend-list">
+                            <select name="friend-all" class="friend-all" multiple size="10">
+                                <option>aaaaaaaa</option>
+                                <option>aaaaaaaa</option>
+                                <option>aaaaaaaa</option>
+                                <option>aaaaaaaa</option>
+                                <option>aaaaaaaa</option>
+                                <option>aaaaaaaa</option>
+                                <option>aaaaaaaa</option>
+                            </select>
+                        </div>
                         <button type="submit" class="create-button">作成</button>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
