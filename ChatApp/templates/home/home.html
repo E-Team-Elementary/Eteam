@@ -31,8 +31,13 @@
         <div class="container">
             <div class="sidebar">
                 <div class="friends-list">
-                    <span class="test-friend"></span>
-                    <span class="test-friend"></span>
+                    {% if channels|length > 0 %}
+                        {% for channels in channels %}
+                        <a class="test-friend" href="~"><span class="test-friend-moji">{{ channels.channel_name }}</span></a>
+                        {% endfor %}
+                    {% else %}
+                    <a class="test-friend" href="~"><span class="test-friend-moji">まだ友達はいません</span></a>
+                    {% endif %}
                 </div>
                 <div class="friends-content"> 
                     <button id="open-modal" class="plus-friend"><i class="bi bi-person-fill-add"></i></button>
@@ -74,22 +79,21 @@
                 <h2>フレンド申請</h2>
                 <div class="add-container">
                     <div class="friend-search">
-                        <input class="input-email" type="email" placeholder="Email">
-                        <button type="submit" class="search-button">
-                            <i class="bi bi-search"></i>
-                        </button>
+                        <form name="friend-search-form" action="/search_user" method="POST">
+                            <input class="input-email" type="email" placeholder="Email">
+                            <button type="submit" class="search-button" id="friend-serach">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </form>
                     </div>
                     <div  class="candidate-area">
-                        <select name="candidate-person" class="candidate-person" size="10">
-                            <option>aaaaaaaa</option>
-                            <option>aaaaaaaa</option>
-                            <option>aaaaaaaa</option>
-                            <option>aaaaaaaa</option>
-                            <option>aaaaaaaa</option>
-                            <option>aaaaaaaa</option>
-                            <option>aaaaaaaa</option>
-                        </select>
-                        <button type="submit" class="add-button">追加</button>
+                        <form name="friend-request-form" action="/friend_request" method="POST">
+                            <select name="candidate-person" class="candidate-person" size="10">
+                                <option>ここに検索した名前の表示</option>
+                                <input type="hidden" name="friend-id" value="友達のIDが入る">
+                            </select>
+                            <button type="submit" class="add-button">追加</button>
+                        </form>
                     </div>
                 </div>
             </div>    
