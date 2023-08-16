@@ -82,6 +82,7 @@ class dbConnect:
         finally:
             cursor.close()
 
+    # 友達申請一覧を取得する
     def getFriendReqList(receiver_id):
         try:
             conn = DB.getConnection()
@@ -102,6 +103,23 @@ class dbConnect:
             abort(500)
         finally:
             cur.close()
+
+    # 友達追加処理
+    def addFriend(receiver_id, sender_id):
+        try:
+            connection = DB.getConnection()
+            cursor = connection.cursor()
+
+            sql = "INSERT INTO friends (user_id,friends_id) VALUES (%s, %s);"
+
+            cursor.execute(sql, (receiver_id, sender_id))
+            connection.commit()
+
+        except Exception as e:
+            print(e + "が発生しています")
+            abort(500)
+        finally:
+            cursor.close()
 
     """
     チャンネル
@@ -247,45 +265,6 @@ class dbConnect:
             cur.execute(sql, (user_id, user_id2))
             friends = cur.fetchall()
             return friends
-        except Exception as e:
-            print(e + "が発生しています")
-            abort(500)
-        finally:
-            cur.close()
-
-    def add_group_Channel(newChannelName, newChannelDescription, newChannelType):
-        try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
-            sql = "INSERT INTO channels (name, abstract, type) VALUES (%s, %s, %s);"
-            cur.execute(sql, (newChannelName, newChannelDescription, newChannelType))
-            conn.commit()
-        except Exception as e:
-            print(e + "が発生しています")
-            abort(500)
-        finally:
-            cur.close()
-
-    def add_group_Channel_adminUser(channel_id, adminUid, adminRole):
-        try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
-            sql = "INSERT INTO channel_users (channel_id, user_id, role) VALUES (%s, %s, %s);"
-            cur.execute(sql, (channel_id, adminUid, adminRole))
-            conn.commit()
-        except Exception as e:
-            print(e + "が発生しています")
-            abort(500)
-        finally:
-            cur.close()
-
-    def add_group_Channel_Users(channel_id, friend_id, memberRole):
-        try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
-            sql = "INSERT INTO channel_users (channel_id, user_id, role) VALUES (%s, %s, %s);"
-            cur.execute(sql, (channel_id, friend_id, memberRole))
-            conn.commit()
         except Exception as e:
             print(e + "が発生しています")
             abort(500)

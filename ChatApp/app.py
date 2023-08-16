@@ -198,11 +198,24 @@ def friend_request_result():
     # uid = session.get("uid")
     # if uid is None:
     #    return redirect("/login")
-    receiver_id = request.form.get("id")
+    receiver_id = request.form.get("user_id")
+    sender_id = request.form.get("sender_id")
     result = request.form.get("result")
 
+    # 申請が許可された時
     if result == 0:
-        print("OK")
+        # friendsテーブルにデータを追加
+        # dbConnect.addFriend(receiver_id, sender_id)
+
+        receiver_data = dbConnect.getUserById(receiver_id)
+        sender_data = dbConnect.getUserById(sender_id)
+
+        channelName = receiver_data["name"] + sender_data["name"]
+
+        # 個人チャットを作成
+        # dbConnect.addChannelGetId()
+
+        return str(channelName)
     else:
         print("")
 
