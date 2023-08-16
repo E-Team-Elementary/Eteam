@@ -138,7 +138,17 @@
         </div>
     
 
+        <script type="text/javascript">
+            // prettier-ignore
+            const channels = JSON.parse('{{ channels|tojson }}');
+            // prettier-ignore
+            const uid = JSON.parse('{{ uid|tojson }}');
+            // prettier-ignore
+            const friends = JSON.parse('firends|tojson');
+            // prettier-ignore
+            const friend_requests = JSON.parse('{{ friend_request|tojson}}')
 
+          </script>
         <script type='text/javascript' async src="../../static/js/modalJs/add-friend.js"></script>
         <script type='text/javascript' async src="../../static/js/modalJs/accept-friend.js"></script>
         <script type="text/javascript" async src="../../static/js/modalJs/add-public.js"></script>
