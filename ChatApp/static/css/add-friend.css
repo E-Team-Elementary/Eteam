@@ -1,149 +1,155 @@
-.add-modal{
-    position: fixed;
-    z-index: 999;
-    width: 100vw;
-    height: 100vh;
-    display: none;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
-    margin: 0;
-    background: rgba(0, 0, 0, 0);
+.add-modal {
+  position: fixed;
+  z-index: 999;
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  margin: 0;
+  background: rgba(0, 0, 0, 0);
 }
 
-.add-friend{
-    position: fixed;
-    z-index: 99;
-    left: 33%;
-    top: 20%;
-    height: 60%;
-    width: 35%;
-    /* From https://css.glass */
-    background: rgba(255, 255, 255, 0.01);
-    border-radius: 16px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 1);
-    display: flex;
-    flex-flow: column;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
+.add-friend {
+  position: fixed;
+  z-index: 99;
+  left: 33%;
+  top: 20%;
+  height: 60%;
+  width: 35%;
+  /* From https://css.glass */
+  background: rgba(255, 255, 255, 0.01);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 1);
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
 }
 
-.add-person{
-    color: #133D64;
-    font-size: 60px;
-    margin-top: 30px;
+.add-person {
+  color: #133d64;
+  font-size: 60px;
+  margin-top: 30px;
 }
 
 .friend-search {
-    position: relative;
-    display: flex;
-    align-items: center;
-    width: 70%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 70%;
 }
 
-.bi-search{
-    margin: 0px;
+.bi-search {
+  margin: 0px;
 }
 
-.friend-search{
-    margin-bottom: 5px;
+.friend-search {
+  margin-bottom: 5px;
+  width: 90%;
 }
 
+#emailform {
+  width: 100%;
+  margin: 8px;
+  position: relative;
+  display: flex;
+}
 
 .friend-search input[type="email"] {
-    flex-grow: 1;
-    padding: 0.7rem 0 0.7rem 0.8rem;
-    border: 1px solid #133D64;
-    border-radius: 1.5rem;
-    width: 70%;
-        /* From https://css.glass */
-    background: rgba(255, 255, 255, 0.78);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    border-radius: 1.5rem;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+  flex-grow: 1;
+  padding: 0.7rem 0 0.7rem 0.8rem;
+  border: 1px solid #133d64;
+  border-radius: 1.5rem;
+  width: 100%;
+  /* From https://css.glass */
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 1.5rem;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 .friend-search button {
-    position: absolute;
-    top: -0.05rem;
-    right: 0;
-    cursor: pointer;
-    padding: .8rem .9rem .8rem .8rem;
-    border-radius: 0 1.5rem 1.5rem 0;
-    border: none;
-    background: none;
-    color: #133D64;
-    font-size: 1rem;
-    transition: 0.5s;
+  position: absolute;
+  top: -0.05rem;
+  right: 0;
+  cursor: pointer;
+  padding: 0.8rem 0.9rem 0.8rem 0.8rem;
+  border-radius: 0 1.5rem 1.5rem 0;
+  border: none;
+  background: none;
+  color: #133d64;
+  font-size: 1rem;
+  transition: 0.5s;
 }
 
 .friend-search input:focus {
-    outline: 0;
-    box-shadow: 0 0 5px #e1e1e1, 0 0 10px #e1e1e1, 0 0 15px #e1e1e1;
+  outline: 0;
+  box-shadow: 0 0 5px #e1e1e1, 0 0 10px #e1e1e1, 0 0 15px #e1e1e1;
+  width: 100%;
 }
 
 .friend-search button:hover {
-    color: #4eadb8;
-    transform: scale(1.2);
+  color: #4eadb8;
+  transform: scale(1.2);
 }
 
-.add-container{
-    width: 100%;
-    height: 50%;
-    display: flex;
-    flex-flow: column;
-    align-items: center;
-    align-content: center;
-
+.add-container {
+  width: 100%;
+  height: 50%;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  align-content: center;
 }
 
-.candidate-area{
-    width: 80%;
-    height: 100%;
-    display: flex;
-    flex-flow: column;
-    justify-content: end;
-    align-items: end;
-    overflow: auto;
-    padding: 10px 0 10px 10px;
+.candidate-area {
+  width: 80%;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  justify-content: end;
+  align-items: end;
+  overflow: auto;
+  padding: 10px 0 10px 10px;
 }
 
-.candidate-area :focus{
-    outline: none;
+.candidate-area :focus {
+  outline: none;
 }
 
-.candidate-person{
-    width: 100%;
-    overflow: auto;
-    text-align: start;
-    border: none;
-    background-color: transparent;
+.candidate-person {
+  width: 100%;
+  overflow: auto;
+  text-align: start;
+  border: none;
+  background-color: transparent;
 }
 
-.candidate-person option{
-    background-color: transparent;
+.candidate-person option {
+  background-color: transparent;
 }
 
-
-.add-button{
-    display: inline-block;
-    padding: 10px;
-    margin: 10px;
-    border-radius: 20px;
-    color: white;
-    background-color: #133D64;
-    border: 1px solid white;
-    cursor: pointer;
+.add-button {
+  display: inline-block;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 20px;
+  color: white;
+  background-color: #133d64;
+  border: 1px solid white;
+  cursor: pointer;
 }
 
-.add-button :focus{
-    color: white;
-    background-color: #133D64;
-    border: 1px solid white;
-    cursor: pointer;
+.add-button :focus {
+  color: white;
+  background-color: #133d64;
+  border: 1px solid white;
+  cursor: pointer;
 }
