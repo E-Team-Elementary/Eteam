@@ -247,68 +247,30 @@ def group():
     if user_id is None:
         return redirect("/login")
     else:
-        channel_type = 1
-        channels = dbConnect.getChannels(user_id, channel_type)
+        # グループチャンネルの一覧を取得
+        channels = dbConnect.getChannels(user_id, TYPE.GROUP_CHAT)
+        # 友達一覧の取得
+        friend_list = dbConnect.getFriendsList(user_id, user_id)
 
-    return render_template("home/groups.html", channels=channels, user_id=user_id)
-
-
-# フレンド名による友達一覧の表示（グループ作成モーダル用）
-
-
-def get_friends_list():
-    user_id = session.get("user_id")
-    friends_list = dbConnect.getFriendsList(user_id, user_id)
-    # if not friends:
-    #     # ユーザーが存在しない場合は空のfriends_infoを返す
-    #     friends_info = {
-    #         "friend_id": "",
-    #         "user_name": "",
-    #     }
-    # else:
-    #     friends_info = {
-    #         "friend_id": friends["friend_id"],
-    #         "user_name": friends["user_name"],
-    #     }
-
-    return jsonify(friends_list), 200  # JSONでユーザー情報を返却
-
-
-"""
     return render_template(
-        "group.html", friends_list=friend_List
+        "home/groups.html", channels=channels, user_id=user_id, friend_list=friend_list
     )
-"""
 
 
 # グループ作成
 
-"""
- todo:
- セッション周りのコメントを外す、リダイレクト先を指定する
- 複数選択されたフレンドをどう取得できるのかを確認したい
- 現在は配列のパラメータを渡したいからjsonでpostされたパラメータを受け取っている
-"""
-
 
 @app.route("/group_create", methods=["POST"])
 def create_group():
-    # user_id = session.get("user_id")
-    # if user_id is None:
-    #     return redirect("/login")
-    # user_id = request.form.get("user_id")
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/login")
 
-    data = request.json
-
-    user_id = data.get("user_id")
-
-    # channel_name = request.form.get("channelTitle")
-    channel_name = data.get("channelTitle")
+    channel_name = request.form.get("channelTitle")
 
     channel = dbConnect.getChannelByName(channel_name)
     if channel == None:
-        # channel_description = request.form.get("channelDescription")
-        channel_description = data.get("channelDescription")
+        channel_description = request.form.get("channelDescription")
 
         # チャンネル追加処理
         channel_id = dbConnect.addChannelGetId(
@@ -319,14 +281,12 @@ def create_group():
         dbConnect.addChannelUser(channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
 
         # チャンネルメンバー登録
-        # friends = request.form.get("friends")
-        friends = data.get("friends")
+        friends = request.form.getlist("friends")
         for friend_id in friends:
             dbConnect.addChannelUser(
                 channel_id[0]["current_id"], friend_id, TYPE.CHAT_MEMBER
             )
-        return "ok"
-        # return redirect("/group")
+        return redirect("/group")
     else:
         error = "既に同じ名前のチャンネルが存在しています"
         # return render_template("error/error.html", error_message=error)

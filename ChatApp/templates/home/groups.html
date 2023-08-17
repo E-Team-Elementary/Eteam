@@ -1,33 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../static/css/groups.css">
     <link rel="stylesheet" href="../../static/css/styles.css">
-    <title>GROUP</title>
-</head>
-<body>
+    <title>GLOUP</title>
+  </head>
+  <body>
+    <!-- ヘッダー部 -->
     <header>
-        <span class="return"><i class="bi bi-caret-left-fill"></i></span>
-        <div class="header-items">
-            <div class="left">
-                <span class="room_name">Group</span>
-                <span>
-                    <a class="bi bi-pen"></a>
-                    <a class="bi bi-trash3"></a>
-                </span>
-            </div>
-            <div class="right">
-                <input class="search" type="text" placeholder="search">
-                <button>
-                    <i class="bi bi-search"></i>
-                </button>
-            </div>
+      <span class="return"><i class="bi bi-caret-left-fill"></i></span>
+      <div class="header-items">
+        <div class="left">
+          <span class="room_name">Group</span>
+          <span>
+            <a class="bi bi-pen"></a>
+            <a class="bi bi-trash3"></a>
+          </span>
         </div>
-
+        <div class="right">
+          <input class="search" type="text" placeholder="search" />
+          <button>
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+      </div>
     </header>
 
+    <!-- サイドバー部-->
     <div class="container">
         <div class="sidebar">
             <div class="friends-list">
@@ -46,87 +47,112 @@
                 <button id="request-friends" class="request-friends">フレンド申請一覧</button>
             </div>
         </div>
-        <div class="content">
-            <div class="talk">
-                <div class="input-area">
-                    <textarea type="text" class="talk-input" wrap="soft"></textarea>
-                    <button class="send-button"><i class="bi bi-send-fill"></i></button>
-                </div>
-            </div>
-            <div class="note">
-                <div class="input-area">
-                    <textarea type="text" class="talk-input" wrap="soft"></textarea>
-                    <button class="send-button"><i class="bi bi-send-fill"></i></button>
-                </div>
-            </div>
+        <div class="friends-content">
+          <button id="add-group" class="plus-friend">
+            <i class="bi bi-people-fill people"></i>
+          </button>
+          <button id="request-friends" class="request-friends">
+            フレンド申請一覧
+          </button>
         </div>
+      </div>
+      <div class="content">
+        <div class="talk">
+          <div class="input-area">
+            <textarea type="text" class="talk-input" wrap="soft"></textarea>
+            <button class="send-button"><i class="bi bi-send-fill"></i></button>
+          </div>
+        </div>
+        <div class="note">
+          <div class="input-area">
+            <textarea type="text" class="talk-input" wrap="soft"></textarea>
+            <button class="send-button"><i class="bi bi-send-fill"></i></button>
+          </div>
+        </div>
+      </div>
     </div>
-    
+
     <footer>
-        <a class="exit" href="{{ url_for('login') }}"><i class="bi bi-three-dots"></i></a>
+      <a class="exit" href="{{ url_for('login') }}"
+        ><i class="bi bi-three-dots"></i
+      ></a>
 
-
-        <span class="room_kinds">
-            <a href="{{ url_for('home') }}" class="bi bi-person-fill"></a>    
-            <a href="{{ url_for('group') }}" class="bi bi-people-fill"></a>
-            <a href="{{ url_for('public') }}" class="bi bi-globe-asia-australia"></a>
-        </span>
+      <span class="room_kinds">
+        <a href="{{ url_for('home') }}" class="bi bi-person-fill"></a>
+        <a href="{{ url_for('group') }}" class="bi bi-people-fill"></a>
+        <a
+          href="{{ url_for('public') }}"
+          class="bi bi-globe-asia-australia"
+        ></a>
+      </span>
     </footer>
 
+    <!-- グループ作成モーダル-->
     <div id="group-modal" class="group-modal">
-        <div class="group-create">
-            <div id="add-group" class="add-group">
-                <div class="group-modal-header"><i class="bi-people-fill add-people add-people-head"></i>
-                    <h2 class="add-people-head">グループ作成</h2>
+      <div class="group-create">
+        <div id="add-group" class="add-group">
+          <div class="group-modal-header">
+            <i class="bi bi-people-fill add-people add-people-head"></i>
+            <h2 class="add-people-head">グループ作成</h2>
+          </div>
+          <div class="create-container">
+            <form class="group-name" action="group_create" method="POST">
+              <input class="input-name" type="text" placeholder="Group Name"
+              name="channelTitle"">
+              <input
+                type="text"
+                class="input-name"
+                placeholder="Group Description"
+                name="channelDescription"
+              />
+              <div class="friend-list">
+                {% for friend in friend_list %}
+                <div class="friend-check">
+                  <input type="checkbox" name="friends" value="{{friend.id}}" />
+                  <label>{{friend.name}}</label>
                 </div>
-                <div class="create-container">
-                    <form class="group-name" action="/group_create" method="POST">
-                        <input class="input-name" type="text" placeholder="Group Name" name="channelTitle">
-                        <input type="text" class="input-name" placeholder="Group Description" name="channelDescription">
-                        <div  class="friend-list">
-                            <select name="friend-all" class="friend-all" multiple size="10">
-                                <option>aaaaaaaa</option>
-                                <option>aaaaaaaa</option>
-                                <option>aaaaaaaa</option>
-                                <option>aaaaaaaa</option>
-                                <option>aaaaaaaa</option>
-                                <option>aaaaaaaa</option>
-                                <option>aaaaaaaa</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="create-button">作成</button>
-                    </form>
-                </div>
-            </div>
+                {% endfor %}
+              </div>
+              <button type="submit" class="create-button">作成</button>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
 
     <div id="request-modal" class="request-modal">
-        <div id="accept-group" class="accept-group">
-            <div><i class="bi bi-person-fill request-person"></i></div>
-            <h2>フレンド申請一覧</h2>
-            <div class="request-container">
-                <div  class="friend-request">
-                    <select name="request-all" class="friend-all" size="999">
-                        <option>aaaaaaaa</option>
-                        <option>aaaaaaaa</option>
-                        <option>aaaaaaaa</option>
-                        <option>aaaaaaaa</option>
-                        <option>aaaaaaaa</option>
-                        <option>aaaaaaaa</option>
-                        <option>aaaaaaaa</option>
-                    </select>
-                    <div class="all-button">
-                        <button type="submit" class="accept-button">承認</button>
-                        <button type="submit" class="deny-button">拒否</button>    
-                    </div>
-                </div>
+      <div id="accept-group" class="accept-group">
+        <div><i class="bi bi-person-fill request-person"></i></div>
+        <h2>フレンド申請一覧</h2>
+        <div class="request-container">
+          <div class="friend-request">
+            <select name="request-all" class="friend-all" size="999">
+              <option>aaaaaaaa</option>
+              <option>aaaaaaaa</option>
+              <option>aaaaaaaa</option>
+              <option>aaaaaaaa</option>
+              <option>aaaaaaaa</option>
+              <option>aaaaaaaa</option>
+              <option>aaaaaaaa</option>
+            </select>
+            <div class="all-button">
+              <button type="submit" class="accept-button">承認</button>
+              <button type="submit" class="deny-button">拒否</button>
             </div>
-        </div>    
+          </div>
+        </div>
+      </div>
     </div>
 
-    <script type='text/javascript' async src="../../static/js/modalJs/add-group.js"></script>
-    <script type="text/javascript" async src="../../static/js/modalJs/accept-friend.js"></script>
-
-
+    <script
+      type="text/javascript"
+      async
+      src="../../static/js/modalJs/add-group.js"
+    ></script>
+    <script
+      type="text/javascript"
+      async
+      src="../../static/js/modalJs/accept-friend.js"
+    ></script>
+  </body>
 </html>
