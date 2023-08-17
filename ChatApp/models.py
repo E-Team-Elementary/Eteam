@@ -255,13 +255,12 @@ class dbConnect:
         try:
             conn = DB.getConnection()
             cur = conn.cursor()
-            sql = "SELECT fr1.friend_id,u1.user_name \
+            sql = "SELECT fr1.friend_id as id,u1.user_name as name\
                     FROM friends fr1 INNER JOIN users u1 on friend_id = u1.id \
                     WHERE fr1.user_id=%s \
-                    UNION SELECT fr1.user_id,u1.user_name \
+                    UNION SELECT fr1.user_id as id,u1.user_name as name \
                     FROM friends fr1 INNER JOIN users u1 on user_id = u1.id \
-                    WHERE fr1.friend_id=%s \
-                    ORDER BY user_name;"
+                    WHERE fr1.friend_id=%s;"
             cur.execute(sql, (user_id, user_id2))
             friends = cur.fetchall()
             return friends

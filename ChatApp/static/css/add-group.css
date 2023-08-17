@@ -29,7 +29,6 @@
   flex-flow: column;
   align-items: center;
   align-content: center;
-  justify-content: center;
 }
 
 .add-people {
@@ -59,11 +58,12 @@
   display: flex;
   align-items: center;
   width: 60%;
-  height: 80%;
   border: none;
   border-bottom: 1px solid #133d64;
   outline: none;
   background-color: transparent;
+  padding: 10px;
+  margin-bottom: 10px;
 }
 
 .input-name input[type="text"] {
@@ -88,22 +88,25 @@
 
 .create-container {
   width: 100%;
-  height: 50%;
   display: flex;
   flex-flow: column;
   align-items: center;
   align-content: center;
+  margin-top: 10px;
 }
 
 .friend-list {
   width: 80%;
-  height: 100%;
   display: flex;
   flex-flow: column;
   justify-content: end;
-  align-items: end;
   overflow: auto;
   padding: 10px 0 10px 10px;
+}
+
+.friend-check {
+  display: flex;
+  padding: 3px;
 }
 
 .friend-list :focus {
