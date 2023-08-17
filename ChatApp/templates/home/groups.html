@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../../static/css/groups.css" />
-    <link rel="stylesheet" href="../../static/css/styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../static/css/groups.css">
+    <link rel="stylesheet" href="../../static/css/styles.css">
     <title>GLOUP</title>
   </head>
   <body>
@@ -30,20 +30,22 @@
 
     <!-- サイドバー部-->
     <div class="container">
-      <div class="sidebar">
-        <!-- グループ一覧部分-->
-        <div class="friends-list">
-          {% if channels|length > 0 %} {% for channels in channels %}
-          <a class="test-friend" href="~"
-            ><span class="test-friend-moji"
-              >{{ channels.channel_name }}</span
-            ></a
-          >
-          {% endfor %} {% else %}
-          <a class="test-friend" href="~"
-            ><span class="test-friend-moji">まだ友達はいません</span></a
-          >
-          {% endif %}
+        <div class="sidebar">
+            <div class="friends-list">
+                {% if channels|length > 0 %} {% for channels in channels %}
+                <a class="test-friend" href="~"
+                  ><span class="test-friend-moji"
+                    >{{ channels.channel_name }}</span
+                  ></a
+                >
+                {% endfor %} {% else %}
+                <div></div>
+                {% endif %}
+            </div>
+            <div class="friends-content"> 
+                <button id="add-group" class="plus-friend"><i class="bi bi-people-fill people"></i></button>
+                <button id="request-friends" class="request-friends">フレンド申請一覧</button>
+            </div>
         </div>
         <div class="friends-content">
           <button id="add-group" class="plus-friend">
