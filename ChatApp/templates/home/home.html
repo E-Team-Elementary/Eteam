@@ -37,9 +37,7 @@
             ></a
           >
           {% endfor %} {% else %}
-          <a class="test-friend" href="~"
-            ><span class="test-friend-moji">まだ友達はいません</span></a
-          >
+          <div></div>
           {% endif %}
         </div>
         <div class="friends-content">
@@ -97,7 +95,12 @@
         <h2>フレンド申請</h2>
         <div class="add-container">
           <div class="friend-search">
-            <form name="friend-search-form" action="/search_user" method="POST">
+            <form
+              name="friend-search-form"
+              action="/search_user"
+              method="POST"
+              id="emailform"
+            >
               <input
                 class="input-email"
                 type="email"

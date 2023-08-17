@@ -13,10 +13,6 @@
             <div class="header-items">
                 <div class="left">
                     <span class="room_name">Friends</span>
-                    <span>
-                        <a class="bi bi-pen"></a>
-                        <a class="bi bi-trash3"></a>
-                    </span>
                 </div>
                 <div class="right">
                     <input class="search" type="text" placeholder="search">
@@ -38,7 +34,17 @@
             </div>
     
             <div class="content">
-                <div class="talk"></div>
+                <div class="talk">
+                    <div class="select-friends">
+                        {% if channels|length > 0 %}
+                        <i class="bi-arrow-up-left-square" id="selecticon1"></i>
+                        <h2>友達を選ぼう</h2>
+                    {% else %}
+                         <i class="bi-arrow-down-left-square" id="selecticon2"></i>
+                        <h2>友達を作ろう</h2>
+                    {% endif %}
+                    </div>
+                </div>
                 <div class="note"></div>
             </div>
         </div>
@@ -60,20 +66,31 @@
                 <h2>フレンド申請</h2>
                 <div class="add-container">
                     <div class="friend-search">
-                        <input class="input-email" type="email" placeholder="Email">
-                        <button type="submit" class="search-button">
-                            <i class="bi bi-search"></i>
-                        </button>
-                    </div>
+                        <form name="friend-search-form" action="/search_user" method="POST" id="emailform">
+                            <input
+                              class="input-email"
+                              type="email"
+                              placeholder="Email"
+                              name="email"
+                            />
+                            <button type="submit" class="search-button" id="friend-serach">
+                              <i class="bi bi-search"></i>
+                            </button>
+                          </form>
+                        </div>
                     <div  class="candidate-area">
-                        <select name="candidate-person" class="candidate-person" size="10">
-                            <option>aaaaaaaa</option>
-                            <option>aaaaaaaa</option>
-                            <option>aaaaaaaa</option>
-                            <option>aaaaaaaa</option>
-                            <option>aaaaaaaa</option>
-                            <option>aaaaaaaa</option>
-                            <option>aaaaaaaa</option>
+                        <form
+                        name="friend-request-form"
+                        action="/friend_request"
+                        method="POST"
+                      >
+                        <select
+                          name="candidate-person"
+                          class="candidate-person"
+                          size="10"
+                        >
+                          <option>ここに検索した名前の表示</option>
+                          <input type="hidden" name="friend-id" value="友達のIDが入る" />
                         </select>
                         <button type="submit" class="add-button">追加</button>
                     </div>
