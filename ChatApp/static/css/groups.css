@@ -193,8 +193,10 @@ header {
   background-color: #f2f2f2;
   border-bottom: solid 2px #e2e2e2;
   display: flex;
-  align-items: end;
-  justify-content: center;
+  align-items: flex-end;
+  flex-flow: column;
+  margin-top: auto;
+  height: 100%;
 }
 
 .input-area {
@@ -205,6 +207,8 @@ header {
   width: 90%;
   height: 15%;
   margin: 10px 0px 20px 10px;
+  align-items: flex-end;
+  margin-top: auto;
 }
 
 .talk-input {
@@ -278,4 +282,78 @@ footer {
   background-color: transparent;
   font-size: 50px;
   margin: 10px;
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  hight: 100%;
+}
+
+.user-name {
+  font-size: 8px;
+  color: grey;
+  margin: 1px 0;
+}
+
+.my-messages {
+  display: flex;
+}
+
+.delete-message-button {
+  background-color: var(--snow);
+  height: 40px;
+  width: 40px;
+  line-height: 47px;
+  padding: 0;
+  margin: 0;
+  bottom: 8px;
+  right: 8px;
+}
+
+.delete-message-button ion-icon {
+  font-size: 1rem;
+}
+
+.box {
+  position: relative;
+  width: 60%;
+  margin: 0;
+  padding: 0.7em 0 0.4em 1em;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0.1em;
+  white-space: pre-wrap;
+}
+
+.box-left {
+  background-color: rgba(18, 37, 67, 0.2);
+  color: var(--navy_blue);
+}
+
+.box-right {
+  background-color: rgba(18, 37, 67, 0.4);
+  color: var(--snow);
+  margin-left: auto;
+}
+
+.box-left:before {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 100%;
+  height: 100%;
+  border: 1px solid grey;
+  content: "";
+}
+
+.box-right:before {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 100%;
+  height: 100%;
+  border: 1px solid grey;
+  content: "";
 }

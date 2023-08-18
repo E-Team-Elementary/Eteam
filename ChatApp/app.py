@@ -235,7 +235,7 @@ def home():
     else:
         channel_type = 0
         channels = dbConnect.getChannels(user_id, channel_type)
-    return render_template("home/home.html", channels=channels, user_id=user_id)
+    return render_template("home/home-base.html", channels=channels, user_id=user_id)
 
 
 # グループ画面の表示
@@ -253,7 +253,7 @@ def group():
         friend_list = dbConnect.getFriendsList(user_id, user_id)
 
     return render_template(
-        "home/groups.html", channels=channels, user_id=user_id, friend_list=friend_list
+        "home/groups-base.html", channels=channels, user_id=user_id, friend_list=friend_list
     )
 
 
@@ -302,9 +302,8 @@ def public():
     if user_id is None:
         return redirect("/login")
     else:
-        channel_type = 2
-        channels = dbConnect.getChannels(user_id, channel_type)
-    return render_template("home/public.html", channels=channels, user_id=user_id)
+        channels = dbConnect.getChannels(user_id, TYPE.PUBLIC_CHAT)
+    return render_template("home/public-base.html", channels=channels, user_id=user_id)
 
 
 # チャンネルの追加
@@ -374,18 +373,51 @@ def delete_channel(channel_id):
 
 
 # チャンネル詳細ページの表示
-@app.route("/detail/<channel_id>")
-def detail(channel_id):
+@app.route("/friend/<channel_id>")
+def detail_friend(channel_id):
     user_id = session.get("user_id")
     if user_id is None:
         return redirect("/login")
 
     channel = dbConnect.getChannelById(channel_id)
     messages = dbConnect.getMessageAll(channel_id)
+    channel_type = channel["type"]
+    channels = dbConnect.getChannels(user_id, channel_type)
 
     return render_template(
-        "detail.html", messages=messages, channel=channel, user_id=user_id
+        "home/home.html", messages=messages, channel=channel, user_id=user_id, channels=channels
     )
+
+@app.route("/group/<channel_id>")
+def detail_group(channel_id):
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/login")
+
+    channel = dbConnect.getChannelById(channel_id)
+    messages = dbConnect.getMessageAll(channel_id)
+    channel_type = channel["type"]
+    channels = dbConnect.getChannels(user_id, channel_type)
+
+    return render_template(
+        "home/groups.html", messages=messages, channel=channel, user_id=user_id, channels=channels
+    )
+
+@app.route("/public/<channel_id>")
+def detail_public(channel_id):
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/login")
+
+    channel = dbConnect.getChannelById(channel_id)
+    messages = dbConnect.getMessageAll(channel_id)
+    channel_type = channel["type"]
+    channels = dbConnect.getChannels(user_id, channel_type)
+
+    return render_template(
+        "home/public.html", messages=messages, channel=channel, user_id=user_id, channels=channels
+    )
+
 
 
 """
@@ -403,24 +435,22 @@ def detail(channel_id):
 
 @app.route("/post_message", methods=["POST"])
 def add_message():
-    # user_id = session.get("user_id")
-    # if user_id is None:
-    #    return redirect("/login")
-    user_id = request.form.get("user_id")
+    user_id = session.get("user_id")
+    if user_id is None:
+       return redirect("/login")
+    # user_id = request.form.get("user_id")
 
     message = request.form.get("message")
     channel_id = request.form.get("channel_id")
     type = request.form.get("message_type")
 
     # messageとnoteで処理を分ける
-    if message:
-        if type == 0:
-            dbConnect.createMessage(user_id, channel_id, message, TYPE.CHAT_MESSAGE)
-        else:
-            dbConnect.createMessage(user_id, channel_id, message, TYPE.NOTE_MESSAGE)
+    if type == 0:
+        dbConnect.createMessage(user_id, channel_id, message, TYPE.CHAT_MESSAGE)
+    else:
+        dbConnect.createMessage(user_id, channel_id, message, TYPE.NOTE_MESSAGE)
 
-    return "OK"
-    # return redirect(f"/detail/{channel_id}")
+    return redirect(f"/detail/{channel_id}")
 
 
 # メッセージの削除
