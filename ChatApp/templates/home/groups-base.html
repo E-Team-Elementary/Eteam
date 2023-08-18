@@ -28,7 +28,7 @@
         <div class="sidebar">
             <div class="friends-list">
                 {% if channels|length > 0 %} {% for channels in channels %}
-                <a class="test-friend" href="~"
+                <a class="test-friend" href="/group/{{ channels.id }}"
                   ><span class="test-friend-moji"
                     >{{ channels.channel_name }}</span
                   ></a

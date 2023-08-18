@@ -278,7 +278,7 @@ class dbConnect:
         try:
             connection = DB.getConnection()
             cursor = connection.cursor()
-            sql = "SELECT id,u.uid, user_name, message FROM messages AS m INNER JOIN users AS u ON m.uid = u.uid WHERE cid = %s;"
+            sql = "SELECT m.id,u.id,u.user_name,m.content FROM messages m INNER JOIN users u ON m.user_id = u.id WHERE channel_id=%s;"
             cursor.execute(sql, (channel_id))
             messages = cursor.fetchall()
             return messages
@@ -288,12 +288,12 @@ class dbConnect:
         finally:
             cursor.close()
 
-    def createMessage(user_id, channel_id, message, type):
+    def createMessage(channel_id, user_id, message, type):
         try:
             connection = DB.getConnection()
             cursor = connection.cursor()
             sql = "INSERT INTO messages(channel_id, user_id, message, type) VALUES(%s, %s, %s, %s)"
-            cursor.execute(sql, (user_id, channel_id, message, type))
+            cursor.execute(sql, (channel_id, user_id, message, type))
             connection.commit()
         except Exception as err:
             print(err + "が発生しています")

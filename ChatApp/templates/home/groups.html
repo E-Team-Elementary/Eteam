@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../../static/css/groups.css" />
     <link rel="stylesheet" href="../../static/css/styles.css" />
-    <title>GLOUP</title>
+    <title>GROUP</title>
   </head>
   <body>
     <!-- ヘッダー部 -->
@@ -13,7 +13,7 @@
       <span class="return"><i class="bi bi-caret-left-fill"></i></span>
       <div class="header-items">
         <div class="left">
-          <span class="room_name">Group</span>
+          <span class="room_name">{{ channel.channel_name }}</span>
           <span>
             <a class="bi bi-pen"></a>
             <a class="bi bi-trash3"></a>
@@ -34,15 +34,13 @@
         <!-- グループ一覧部分-->
         <div class="friends-list">
           {% if channels|length > 0 %} {% for channels in channels %}
-          <a class="test-friend" href="~"
+          <a class="test-friend" href="/group/{{ channels.id }}"
             ><span class="test-friend-moji"
               >{{ channels.channel_name }}</span
             ></a
           >
           {% endfor %} {% else %}
-          <a class="test-friend" href="~"
-            ><span class="test-friend-moji">まだ友達はいません</span></a
-          >
+          <div></div>
           {% endif %}
         </div>
         <div class="friends-content">
@@ -56,9 +54,52 @@
       </div>
       <div class="content">
         <div class="talk">
+          <div class="messages">
+            {% if messages|length > 0 %} {% for message in messages %} {% if
+            message.user_id == user_id %}
+            <div class="my-messages">
+              <p class="box box-right">{{ message.content }}</p>
+              <form action="/delete_message" method="POST">
+                <input
+                  type="hidden"
+                  value="{{ channel.id }}"
+                  name="channel_id"
+                />
+                <button
+                  class="bi bi-trash3"
+                  name="message_id"
+                  value="{{ message.id }}"
+                >
+                  <ion-icon
+                    name="trash-bin-outline"
+                    style="color: #122543"
+                  ></ion-icon>
+                </button>
+              </form>
+            </div>
+            {% else %}
+            <div class="messages">
+              <p class="user-name">{{ message.user_name }}</p>
+              <p class="box box-left">{{ message.content }}</p>
+            </div>
+            {% endif %} {% endfor %} {% else %}
+            <div id="no-message"><p>まだメッセージがありません</p></div>
+            {% endif %}
+          </div>
           <div class="input-area">
-            <textarea type="text" class="talk-input" wrap="soft"></textarea>
-            <button class="send-button"><i class="bi bi-send-fill"></i></button>
+            <form action="/post_message" method="POST">
+              <textarea
+                type="text"
+                name="message"
+                class="talk-input"
+                wrap="soft"
+              ></textarea>
+              <input type="hidden" value="{{ channel.id }}" name="channel_id" />
+              <input type="hidden" value="0" name="message_type" />
+              <button class="send-button">
+                <i class="bi bi-send-fill"></i>
+              </button>
+            </form>
           </div>
         </div>
         <div class="note">

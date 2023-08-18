@@ -12,7 +12,7 @@
       <span class="return"><i class="bi bi-caret-left-fill"></i></span>
       <div class="header-items">
         <div class="left">
-          <span class="room_name">Friends</span>
+          <span class="room_name">{{ channel.channel_name }}</span>
           <span>
             <a class="bi bi-pen"></a>
             <a class="bi bi-trash3"></a>
@@ -31,7 +31,7 @@
       <div class="sidebar">
         <div class="friends-list">
           {% if channels|length > 0 %} {% for channels in channels %}
-          <a class="test-friend" href="~"
+          <a class="test-friend" href="/friend/{{ channels.id }}"
             ><span class="test-friend-moji"
               >{{ channels.channel_name }}</span
             ></a
