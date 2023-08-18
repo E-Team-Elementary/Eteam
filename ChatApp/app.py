@@ -253,7 +253,10 @@ def group():
         friend_list = dbConnect.getFriendsList(user_id, user_id)
 
     return render_template(
-        "home/groups-base.html", channels=channels, user_id=user_id, friend_list=friend_list
+        "home/groups-base.html",
+        channels=channels,
+        user_id=user_id,
+        friend_list=friend_list,
     )
 
 
@@ -385,8 +388,13 @@ def detail_friend(channel_id):
     channels = dbConnect.getChannels(user_id, channel_type)
 
     return render_template(
-        "home/home.html", messages=messages, channel=channel, user_id=user_id, channels=channels
+        "home/home.html",
+        messages=messages,
+        channel=channel,
+        user_id=user_id,
+        channels=channels,
     )
+
 
 @app.route("/group/<channel_id>")
 def detail_group(channel_id):
@@ -399,9 +407,18 @@ def detail_group(channel_id):
     channel_type = channel["type"]
     channels = dbConnect.getChannels(user_id, channel_type)
 
+    # 友達一覧の取得
+    friend_list = dbConnect.getFriendsList(user_id, user_id)
+
     return render_template(
-        "home/groups.html", messages=messages, channel=channel, user_id=user_id, channels=channels
+        "home/groups.html",
+        messages=messages,
+        channel=channel,
+        user_id=user_id,
+        channels=channels,
+        friend_list=friend_list,
     )
+
 
 @app.route("/public/<channel_id>")
 def detail_public(channel_id):
@@ -415,9 +432,12 @@ def detail_public(channel_id):
     channels = dbConnect.getChannels(user_id, channel_type)
 
     return render_template(
-        "home/public.html", messages=messages, channel=channel, user_id=user_id, channels=channels
+        "home/public.html",
+        messages=messages,
+        channel=channel,
+        user_id=user_id,
+        channels=channels,
     )
-
 
 
 """
@@ -437,7 +457,7 @@ def detail_public(channel_id):
 def add_message():
     user_id = session.get("user_id")
     if user_id is None:
-       return redirect("/login")
+        return redirect("/login")
     # user_id = request.form.get("user_id")
 
     message = request.form.get("message")
