@@ -20,8 +20,14 @@
           </span>
         </div>
         <div class="right">
-          <input class="search" type="text" placeholder="search" />
-          <button>
+          <input
+            class="search"
+            id="search_word"
+            type="text"
+            placeholder="search"
+            value=""
+          />
+          <button id="button_search">
             <i class="bi bi-search"></i>
           </button>
         </div>
@@ -54,40 +60,46 @@
       </div>
       <div class="content">
         <div class="talk">
-          <div class="messages">
-            {% if messages|length > 0 %} {% for message in messages %} {% if
-            message.user_id == user_id %}
-            <div class="my-messages">
-              <p class="box box-right">{{ message.content }}</p>
-              <form action="/delete_message" method="POST">
-                <input
-                  type="hidden"
-                  value="{{ channel.id }}"
-                  name="channel_id"
-                />
-                <button
-                  class="bi bi-trash3"
-                  name="message_id"
-                  value="{{ message.id }}"
-                >
-                  <ion-icon
-                    name="trash-bin-outline"
-                    style="color: #122543"
-                  ></ion-icon>
-                </button>
-              </form>
-            </div>
-            {% else %}
+          <div class="message-area">
             <div class="messages">
-              <p class="user-name">{{ message.user_name }}</p>
-              <p class="box box-left">{{ message.content }}</p>
+              {% if messages|length > 0 %} {% for message in messages %} {% if
+              message.user_id == user_id %}
+              <div class="my-messages">
+                <p class="box box-right">{{ message.content }}</p>
+                <form
+                  action="/delete_message"
+                  method="POST"
+                  class="delete-bottom"
+                >
+                  <input
+                    type="hidden"
+                    value="{{ channel.id }}"
+                    name="channel_id"
+                  />
+                  <button
+                    class="bi bi-trash3"
+                    name="message_id"
+                    value="{{ message.id }}"
+                  >
+                    <ion-icon
+                      name="trash-bin-outline"
+                      style="color: #122543"
+                    ></ion-icon>
+                  </button>
+                </form>
+              </div>
+              {% else %}
+              <div class="messages">
+                <p class="user-name">{{ message.user_name }}</p>
+                <p class="box box-left">{{ message.content }}</p>
+              </div>
+              {% endif %} {% endfor %} {% else %}
+              <div id="no-message"><p>まだメッセージがありません</p></div>
+              {% endif %}
             </div>
-            {% endif %} {% endfor %} {% else %}
-            <div id="no-message"><p>まだメッセージがありません</p></div>
-            {% endif %}
           </div>
           <div class="input-area">
-            <form action="/post_message" method="POST">
+            <form action="/post_message" method="POST" class="input-area-form">
               <textarea
                 type="text"
                 name="message"
@@ -103,9 +115,58 @@
           </div>
         </div>
         <div class="note">
+          <div class="note-area">
+            <div class="notes">
+              {% if notes|length > 0 %}{% for note in notes %}{% if note.user_id
+              == user_id %}
+              <div class="my-note">
+                <p class="my-note-detail">{{ note.content }}</p>
+                <form
+                  action="/delete_message"
+                  method="POST"
+                  class="delete-bottom"
+                >
+                  <input
+                    type="hidden"
+                    value="{{ channel.id }}"
+                    name="channel_id"
+                  />
+                  <button
+                    class="bi bi-trash3"
+                    name="message_id"
+                    value="{{ note.id }}"
+                  >
+                    <ion-icon
+                      name="trash-bin-outline"
+                      style="color: #122543"
+                    ></ion-icon>
+                  </button>
+                </form>
+              </div>
+              {% else %}
+              <div class="my-note">
+                <p class="user-name">{{ note.user_name }}</p>
+                <p class="my-note-detail">{{ note.content }}</p>
+              </div>
+              {% endif %} {% endfor %} {% else %}
+              <div id="no-note"><p>まだノートがありません</p></div>
+              {% endif %}
+            </div>
+          </div>
           <div class="input-area">
-            <textarea type="text" class="talk-input" wrap="soft"></textarea>
-            <button class="send-button"><i class="bi bi-send-fill"></i></button>
+            <form action="/post_message" method="POST" class="input-area-form">
+              <textarea
+                type="text"
+                name="message"
+                class="talk-input"
+                wrap="soft"
+              ></textarea>
+              <input type="hidden" value="{{ channel.id }}" name="channel_id" />
+              <input type="hidden" value="1" name="message_type" />
+              <button class="send-button">
+                <i class="bi bi-send-fill"></i>
+              </button>
+            </form>
           </div>
         </div>
       </div>
@@ -183,6 +244,10 @@
       </div>
     </div>
 
+    <script type="text/javascript">
+      // prettier-ignore
+      const user_id = JSON.parse('{{ user_id|tojson }}');
+    </script>
     <script
       type="text/javascript"
       async
@@ -192,6 +257,11 @@
       type="text/javascript"
       async
       src="../../static/js/modalJs/accept-friend.js"
+    ></script>
+    <script
+      type="text/javascript"
+      async
+      src="../../static/js/search.js"
     ></script>
   </body>
 </html>

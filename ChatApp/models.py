@@ -274,12 +274,12 @@ class dbConnect:
     メッセージ
     """
 
-    def getMessageAll(channel_id):
+    def getMessageAll(channel_id, type):
         try:
             connection = DB.getConnection()
             cursor = connection.cursor()
-            sql = "SELECT m.id,u.id,u.user_name,m.content FROM messages m INNER JOIN users u ON m.user_id = u.id WHERE channel_id=%s;"
-            cursor.execute(sql, (channel_id))
+            sql = "SELECT m.id,u.id as user_id,u.user_name,m.content ,m.type FROM messages m INNER JOIN users u ON m.user_id = u.id WHERE channel_id=%s AND type=%s;"
+            cursor.execute(sql, (channel_id, type))
             messages = cursor.fetchall()
             return messages
         except Exception as err:
@@ -292,7 +292,7 @@ class dbConnect:
         try:
             connection = DB.getConnection()
             cursor = connection.cursor()
-            sql = "INSERT INTO messages(channel_id, user_id, message, type) VALUES(%s, %s, %s, %s)"
+            sql = "INSERT INTO messages(channel_id, user_id, content, type) VALUES(%s, %s, %s, %s)"
             cursor.execute(sql, (channel_id, user_id, message, type))
             connection.commit()
         except Exception as err:

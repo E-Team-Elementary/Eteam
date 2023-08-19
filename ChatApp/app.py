@@ -397,7 +397,8 @@ def detail_group(channel_id):
         return redirect("/login")
 
     channel = dbConnect.getChannelById(channel_id)
-    messages = dbConnect.getMessageAll(channel_id)
+    messages = dbConnect.getMessageAll(channel_id, type=TYPE.CHAT_MESSAGE)
+    notes = dbConnect.getMessageAll(channel_id, type=TYPE.NOTE_MESSAGE)
     channel_type = channel["type"]
     channels = dbConnect.getChannels(user_id, channel_type)
 
@@ -411,6 +412,7 @@ def detail_group(channel_id):
         user_id=user_id,
         channels=channels,
         friend_list=friend_list,
+        notes=notes
     )
 
 
@@ -458,13 +460,9 @@ def add_message():
     channel_id = request.form.get("channel_id")
     type = request.form.get("message_type")
 
-    # messageとnoteで処理を分ける
-    if type == 0:
-        dbConnect.createMessage(user_id, channel_id, message, TYPE.CHAT_MESSAGE)
-    else:
-        dbConnect.createMessage(user_id, channel_id, message, TYPE.NOTE_MESSAGE)
+    dbConnect.createMessage(channel_id, user_id, message, type)
 
-    return redirect(f"/detail/{channel_id}")
+    return redirect(f"/group/{channel_id}")
 
 
 # メッセージの削除
@@ -480,7 +478,7 @@ def delete_message():
     if message_id:
         dbConnect.deleteMessage(message_id)
 
-    return redirect(f"/detail/{channel_id}")
+    return redirect(f"/group/{channel_id}")
 
 
 """
