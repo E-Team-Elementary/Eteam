@@ -318,14 +318,14 @@ def public():
 
 @app.route("/public", methods=["POST"])
 def add_channel():
-    # user_id = session.get("user_id")
-    # if user_id is None:
-    #    return redirect("/login")
-    user_id = request.form.get("user_id")
-    channel_name = request.form.get("channelTitle")
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/login")
+
+    channel_name = request.form.get("inputPublicName")
     channel = dbConnect.getChannelByName(channel_name)
     if channel == None:
-        channel_description = request.form.get("channelDescription")
+        channel_description = request.form.get("publicDescription")
 
         # チャンネル追加処理
         channel_id = dbConnect.addChannelGetId(
@@ -334,13 +334,11 @@ def add_channel():
         # チャンネルユーザー登録処理
         dbConnect.addChannelUser(channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
 
-        return str(channel_id[0]["current_id"])
-        # return redirect("/")
+        return redirect("/public")
 
     else:
         error = "既に同じ名前のチャンネルが存在しています"
-        return error
-        # return render_template("error/error.html", error_message=error)
+        return render_template("error/error.html", error_message=error)
 
 
 # チャンネルの更新
