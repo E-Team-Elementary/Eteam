@@ -310,10 +310,6 @@ def public():
 
 
 # チャンネルの追加
-"""
- todo:
- セッション周りのコメントを外す、リダイレクト先を指定する
-"""
 
 
 @app.route("/public", methods=["POST"])
