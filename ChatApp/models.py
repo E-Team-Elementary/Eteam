@@ -157,7 +157,7 @@ class dbConnect:
         try:
             connection = DB.getConnection()
             cursor = connection.cursor()
-            sql = "SELECT * FROM channels WHERE name=%s;"
+            sql = "SELECT * FROM channels WHERE channel_name=%s;"
             cursor.execute(sql, (channel_name))
             channel = cursor.fetchone()
             return channel
@@ -188,7 +188,7 @@ class dbConnect:
             connection = DB.getConnection()
             # チャンネル情報をchannelsテーブルに挿入
             cursor = connection.cursor()
-            sql = "INSERT INTO channels (name, abstract, type) VALUES (%s, %s, %s);"
+            sql = "INSERT INTO channels (channel_name, abstract, type) VALUES (%s, %s, %s);"
             cursor.execute(sql, (newChannelName, newChannelDescription, channelType))
             connection.commit()
 
