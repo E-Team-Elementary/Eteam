@@ -35,10 +35,9 @@
     
             <div class="content">
                 <div class="talk">
-                    <div class="input-area">
-                        <textarea type="text" class="talk-input" wrap="soft"></textarea>
-                        <button class="send-button"><i class="bi bi-send-fill"></i></button>
-                    </div>
+                    {% for channel in channels %}
+                      <p>{{channel.channel_name}}</p>
+                    {% endfor %}
                     <div class="public-open">
                         <button class="open-add-public" id="open-add-public">
                             <i class="bi bi-send-plus-fill plus-public"></i>
@@ -53,9 +52,9 @@
                                 <h2>パブリックチャンネル</h2>
                             </div>
                             <div class="public-container">
-                                <form class="public-name">
-                                    <input class="input-public-name" type="text" placeholder="Channel Name">
-                                    <textarea type="text" class="public-description" placeholder="チャンネルの説明を記入"></textarea>
+                                <form class="public-name" action="/public" method="POST">
+                                    <input name="inputPublicName" class="input-public-name" type="text" placeholder="Channel Name">
+                                    <textarea name="publicDescription" type="text" class="public-description" placeholder="チャンネルの説明を記入"></textarea>
                                     <button type="submit" class="public-add-button">追加</button>
                                 </form>
                             </div>
