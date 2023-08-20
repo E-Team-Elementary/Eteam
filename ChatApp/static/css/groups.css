@@ -255,13 +255,15 @@ header {
 
 .note {
   background-image: url(../img/note_background.png);
-  width: 50%;
   flex-grow: 1;
+  width: 50%;
+  background-color: #f2f2f2;
   border-bottom: solid 2px #e2e2e2;
-  border-left: #e2e2e2;
   display: flex;
-  align-items: end;
-  justify-content: center;
+  align-items: flex-end;
+  flex-flow: column;
+  margin-top: auto;
+  height: 100%;
   position: relative;
 }
 
@@ -279,11 +281,30 @@ header {
 
 .my-note {
   display: flex;
+  color: #5d627b;
+  background: white;
+  border-top: solid 5px #5d627b;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.22);
+  width: 80%;
+  padding: 0.5em 1em;
+  margin: 1em;
+}
+
+.your-note {
+  display: flex;
+  flex-flow: column;
+  padding: 0.5em 1em;
+  margin: 1em;
+  width: 80%;
+  color: #5d627b;
+  background: white;
+  border-top: solid 5px #5d627b;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.22);
 }
 
 .my-note-detail {
   position: relative;
-  width: 60%;
+  width: 90%;
   margin: 0;
   padding: 0.7em 0 0.4em 1em;
   font-size: 14px;

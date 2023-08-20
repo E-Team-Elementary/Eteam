@@ -1,5 +1,7 @@
-// 各チャンネル詳細ページ内、ページ読み込み時に自動で下までスクロールする
 window.onload = function () {
-  const messageArea = document.getElementById("message-area");
-  messageArea.scrollIntoView(false);
+  const scroller = document.getElementById("message-area");
+  scroller.scrollTop = scroller.scrollHeight - scroller.clientHeight;
+
+  const scroller2 = document.getElementById("note-area");
+  scroller2.scrollTop = scroller2.scrollHeight - scroller2.clientHeight;
 };

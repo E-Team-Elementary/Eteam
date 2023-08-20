@@ -60,7 +60,7 @@
       </div>
       <div class="content">
         <div class="talk">
-          <div class="message-area">
+          <div class="message-area" id="message-area">
             <div class="messages">
               {% if messages|length > 0 %} {% for message in messages %} {% if
               message.user_id == user_id %}
@@ -115,7 +115,7 @@
           </div>
         </div>
         <div class="note">
-          <div class="note-area">
+          <div class="note-area" id="note-area">
             <div class="notes">
               {% if notes|length > 0 %}{% for note in notes %}{% if note.user_id
               == user_id %}
@@ -144,7 +144,7 @@
                 </form>
               </div>
               {% else %}
-              <div class="my-note">
+              <div class="your-note">
                 <p class="user-name">{{ note.user_name }}</p>
                 <p class="my-note-detail">{{ note.content }}</p>
               </div>
@@ -262,6 +262,11 @@
       type="text/javascript"
       async
       src="../../static/js/search.js"
+    ></script>
+    <script
+      type="text/javascript"
+      async
+      src="../../static/js/scroll-message.js"
     ></script>
   </body>
 </html>
