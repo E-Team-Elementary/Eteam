@@ -6,26 +6,21 @@ window.addEventListener("DOMContentLoaded", function () {
       let search_word = document.getElementById("search_word").value;
       let reg = new RegExp(search_word, "gi");
 
-      function isEmpty(search_word) {
-        if (!search_word || search_word.length == 0) {
-          console.log("文字列は空です");
-        } else {
-          for (let pi = 0; pi < p_elements.length; pi++) {
-            let p_text = p_elements[pi].textContent;
+      if (!search_word || search_word.length == 0) {
+        console.log("文字列は空です");
+      } else {
+        for (let pi = 0; pi < p_elements.length; pi++) {
+          let p_text = p_elements[pi].textContent;
 
-            p_elements[pi].innerHTML = p_text.replace(
-              reg,
-              function (match_word) {
-                return "<em>" + match_word + "<em>";
-              }
-            );
-          }
-          let search_word_first = document.querySelector("em");
-          search_word_first.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
+          p_elements[pi].innerHTML = p_text.replace(reg, function (match_word) {
+            return "<em>" + match_word + "<em>";
           });
         }
+        let search_word_first = document.querySelector("em");
+        search_word_first.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
       }
     });
 });
