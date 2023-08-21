@@ -5,10 +5,10 @@ class DB:
     def getConnection():
         try:
             connection = pymysql.connect(
-                host="db",
+                host="chatapp.ci06votjyvzz.ap-northeast-1.rds.amazonaws.com",
                 db="chatapp",
-                user="testuser",
-                password="testuser",
+                user="admin",
+                password="hJpQ9B4A",
                 charset="utf8",
                 cursorclass=pymysql.cursors.DictCursor
             )
