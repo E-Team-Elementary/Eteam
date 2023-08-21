@@ -40,8 +40,8 @@ CREATE TABLE friend_requests (
   receiver_id varchar(255) NOT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (sender_id, receiver_id),
-  FOREIGN KEY (sender_id) REFERENCES users (id),
-  FOREIGN KEY (receiver_id) REFERENCES users (id)
+  FOREIGN KEY (sender_id) REFERENCES users (id) ON DELETE CASCADE,
+  FOREIGN KEY (receiver_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
 INSERT INTO friend_requests (sender_id, receiver_id)
