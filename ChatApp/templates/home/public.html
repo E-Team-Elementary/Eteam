@@ -9,10 +9,10 @@
 </head>
 <body>
         <header>
-            <span class="return"><i class="bi bi-caret-left-fill"></i></span>
+            <a href="{{ url_for('public') }}"class="return"><i class="bi bi-caret-left-fill"></i></a>
             <div class="header-items">
                 <div class="left">
-                    <span class="room_name">Public</span>
+                    <span class="room_name">{{channel.channel_name}}</span>
                     <span>
                         <a class="bi bi-pen"></a>
                         <a class="bi bi-trash3"></a>
@@ -42,30 +42,7 @@
                         <textarea type="text" class="talk-input" wrap="soft"></textarea>
                         <button class="send-button"><i class="bi bi-send-fill"></i></button>
                     </div>
-                    <div class="public-open">
-                        <button class="open-add-public" id="open-add-public">
-                            <i class="bi bi-send-plus-fill plus-public"></i>
-                        </button>
-                    </div>
                 </div>
-
-                <div id="public-modal" class="public-modal">
-                    <div class="plus-public-modal">
-                        <div class="add-public-modal">
-                            <div class="public-modal-header"><i class="bi bi-people-fill public-icon"></i>
-                                <h2>パブリックチャンネル</h2>
-                            </div>
-                            <div class="public-container">
-                                <form class="public-name">
-                                    <input class="input-public-name" type="text" placeholder="Channel Name">
-                                    <textarea type="text" class="public-description" placeholder="チャンネルの説明を記入"></textarea>
-                                    <button type="submit" class="public-add-button">追加</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
                 <div class="note">
                     <div class="input-area">
                         <textarea type="text" class="talk-input" wrap="soft"></textarea>
@@ -142,9 +119,8 @@
             // prettier-ignore
             const channels = JSON.parse('{{ channels|tojson }}');
             // prettier-ignore
-            const uid = JSON.parse('{{ user_id|tojson }}');
-
-          </script>
+            const user_id = JSON.parse('{{ user_id|tojson }}');
+        </script>
         <script type='text/javascript' async src="../../static/js/modalJs/add-friend.js"></script>
         <script type='text/javascript' async src="../../static/js/modalJs/accept-friend.js"></script>
         <script type="text/javascript" async src="../../static/js/modalJs/add-public.js"></script>

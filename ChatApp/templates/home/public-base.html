@@ -35,13 +35,42 @@
     
             <div class="content">
                 <div class="talk">
-                    {% for channel in channels %}
-                      <p>{{channel.channel_name}}</p>
-                    {% endfor %}
-                    <div class="public-open">
+                    <div class="all-public-channel">
+                        {% for channel in channels %}
+                        <div class="public-channel">
+                            <a class="public-massage" href="public/{{ channel.id }}">
+                                <span>{{channel.channel_name}}</span>
+                            </a>
+                            <p class="public-option">
+                                <span class="channel-description">{{channel.abstract}}</span>
+                                <span>
+                                    <span id="edit-channel"><i class="bi bi-vector-pen"></i></span>
+                                    <span id="trash-channel"><i class="bi bi-trash3"></i></span>
+                                </span>
+                            </p>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <span class="public-open">
                         <button class="open-add-public" id="open-add-public">
                             <i class="bi bi-send-plus-fill plus-public"></i>
                         </button>
+                    </span>
+                </div>
+
+                <div id="delete-public-modal" class="delete-public-modal">
+                    <div class="delete-public-content">
+                      <h1>チャンネル削除</h1>
+                      <div class="delete-public-container">
+                        <div class="delete-modal-body">
+                          <p>本当に消えます。</p>
+                          <p>よろしいですか？</p>
+                          <a id="delete-confirmation-link" class="delete-confirmation-link">
+                            <button id="delete-channel-confirmation-button" class="delete-channel-confirmation-button">削除</button>
+                          </a>
+                        </div>
+                      </div>
                     </div>
                 </div>
 
@@ -62,12 +91,7 @@
                     </div>
                 </div>
                 
-                <div class="note">
-                    <div class="input-area">
-                        <textarea type="text" class="talk-input" wrap="soft"></textarea>
-                        <button class="send-button"><i class="bi bi-send-fill"></i></button>
-                    </div>
-                </div>
+                <div class="note"></div>
             </div>
         </div>
         
@@ -138,12 +162,12 @@
             // prettier-ignore
             const channels = JSON.parse('{{ channels|tojson }}');
             // prettier-ignore
-            const uid = JSON.parse('{{ user_id|tojson }}');
+            const user_id = JSON.parse('{{ user_id|tojson }}');
 
           </script>
-        <script type='text/javascript' async src="../../static/js/modalJs/add-friend.js"></script>
-        <script type='text/javascript' async src="../../static/js/modalJs/accept-friend.js"></script>
+
         <script type="text/javascript" async src="../../static/js/modalJs/add-public.js"></script>
+        <script type="text/javascript" async src="../../static/js/modalJS/delete-channel.js"></script>
 
 </body>    
 </html>
