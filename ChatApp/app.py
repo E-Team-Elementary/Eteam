@@ -115,27 +115,43 @@ def logout():
 
 
 # Emailでユーザーを検索　（フレンド申請用）
+# @app.route("/search_user", methods=["POST"])
+# def search_user():
+#     # user_id = session.get("user_id")
+#     # if user_id is None:
+#     #     return redirect('/login')
+#     email = request.form.get("email")
+#     user = dbConnect.getUserByEmail(email)
+#     if not user:
+#         # ユーザーが存在しない場合は空のuser_infoを返す
+#         user_info = {
+#             "user_id": "",
+#             "user_name": "",
+#             "email": "",
+#         }
+#     else:
+#         user_info = {
+#             "user_id": user["id"],
+#             "user_name": user["user_name"],
+#             "email": user["email"],
+#         }
+#     return jsonify(user_info), 200  # JSONでユーザー情報を返却
 @app.route("/search_user", methods=["POST"])
 def search_user():
-    # user_id = session.get("user_id")
-    # if user_id is None:
-    #     return redirect('/login')
     email = request.form.get("email")
     user = dbConnect.getUserByEmail(email)
     if not user:
-        # ユーザーが存在しない場合は空のuser_infoを返す
-        user_info = {
-            "user_id": "",
-            "user_name": "",
-            "email": "",
-        }
+        response = make_response(json.dumps(
+            {"message": "user not found"}), 404)
+        response.mimetype = "application/json"  # レスポンスのmimetypeをapplication/jsonに設定
+        return response
     else:
         user_info = {
             "user_id": user["id"],
             "user_name": user["user_name"],
             "email": user["email"],
         }
-    return jsonify(user_info), 200  # JSONでユーザー情報を返却
+    return jsonify(user_info), 200
 
 
 # フレンド申請を作成する
@@ -145,7 +161,8 @@ def friend_request():
     # if user_id is None:
     #     return redirect('/login')
     data = request.json
-    sender_id = data.get("sender_id")
+    # sender_id = user_id
+    sender_id = session.get("user_id")
     receiver_id = data.get("receiver_id")
     if sender_id is None or receiver_id is None:
         return (
@@ -155,13 +172,19 @@ def friend_request():
             400,
         )
     result = dbConnect.createFriendRequest(sender_id, receiver_id)
-
+    redirect_url = "/"
+    response = jsonify({"redirect_url": redirect_url})
+    response.headers["X-Redirect"] = redirect_url
     if result == "success":
-        return jsonify({"message": "フレンド申請を送りました"}), 200
+        # return jsonify({"message": "フレンド申請を送りました"}), 200
+        flash("フレンド申請を送りました")
     elif result == "duplicate":
-        return jsonify({"message": "既に申請済みです"}), 422
+        # return jsonify({"message": "既に申請済みです"}), 422
+        flash("既に申請済みです")
     elif result == "error":
-        return jsonify({"message": "申請に失敗しました"}), 422
+        # return jsonify({"message": "申請に失敗しました"}), 422
+        flash("申請に失敗しました")
+    return response
 
 
 # ログインユーザーに対して、友達申請一覧を取得し、友達申請一覧画面(仮)に遷移
@@ -172,52 +195,66 @@ def friend_request():
 """
 
 
-@app.route("/friend_request_list", methods=["GET", "POST"])
+@app.route("/friend_request")
 def friend_request_list():
-    # uid = session.get("uid")
-    # if uid is None:
+    # user_id = session.get("user_id")
+    # if user_id is None:
     #    return redirect("/login")
-    receiver_id = request.form.get("id")
 
+    user_id = session.get("user_id")
     # ログインユーザーの友達申請一覧を一覧を取得
-    friend_request_list = dbConnect.getFriendReqList(receiver_id)
+    request_list = dbConnect.getFriendReqList(user_id)
 
-    return jsonify(friend_request_list)
+    # データをJSON形式に整形して返す
+    result = []
+    for request in request_list:
+        request_data = {
+            "sender_id": request["sender_id"],
+            "sender_name": request["sender_name"],
+            "created_at": request["created_at"].strftime("%Y-%m-%d %H:%M:%S"),
+        }
+        result.append(request_data)
 
-
-"""
-    return render_template(
-        "/friend-request-list.html", friend_request_list=friend_request_list
-    )
-"""
+    return jsonify(result), 200
 
 
 # 友達申請承認・拒否処理
-@app.route("/friend_request_result", methods=["POST"])
+@app.route("/friend-response", methods=["POST"])
 def friend_request_result():
-    # uid = session.get("uid")
-    # if uid is None:
+    user_id = session.get("user_id")
+    # if user_id is None:
     #    return redirect("/login")
-    receiver_id = request.form.get("user_id")
-    sender_id = request.form.get("sender_id")
-    result = request.form.get("result")
 
-    # 申請が許可された時
-    if result == 0:
-        # friendsテーブルにデータを追加
-        # dbConnect.addFriend(receiver_id, sender_id)
+    data = request.json
+    sender_id = data.get("sender_id")
+    receiver_id = user_id
+    response = data.get("response")
 
-        receiver_data = dbConnect.getUserById(receiver_id)
+    dbConnect.deleteFriendRequest(sender_id, receiver_id)
+
+    if response == "accept":
+
+        channel_type = TYPE.FRIEND_CHAT
+        channel_description = ""
         sender_data = dbConnect.getUserById(sender_id)
+        receiver_data = dbConnect.getUserById(receiver_id)
+        channel_name = sender_data["user_name"] + receiver_data["user_name"]
 
-        channelName = receiver_data["name"] + sender_data["name"]
+        result = dbConnect.addFriendAndChannel(
+            sender_id, receiver_id, channel_name, channel_description, channel_type)
 
-        # 個人チャットを作成
-        # dbConnect.addChannelGetId()
+        if result == "success":
+            flash("フレンド申請を承認しました")
+        elif result == "error":
+            flash("エラーが発生しました")
 
-        return str(channelName)
-    else:
-        print("")
+    elif response == "deny":
+        flash("フレンド申請を拒否しました")
+
+    redirect_url = "/"
+    response = jsonify({"redirect_url": redirect_url})
+    response.headers["X-Redirect"] = redirect_url
+    return response
 
 
 """
@@ -281,7 +318,8 @@ def create_group():
         )
 
         # チャンネル管理者登録
-        dbConnect.addChannelUser(channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
+        dbConnect.addChannelUser(
+            channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
 
         # チャンネルメンバー登録
         friends = request.form.getlist("friends")
@@ -328,7 +366,8 @@ def add_channel():
             channel_name, channel_description, TYPE.PUBLIC_CHAT
         )
         # チャンネルユーザー登録処理
-        dbConnect.addChannelUser(channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
+        dbConnect.addChannelUser(
+            channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
 
         return redirect("/public")
 
@@ -348,7 +387,8 @@ def update_channel():
     channel_name = request.form.get("channelTitle")
     channel_description = request.form.get("channelDescription")
 
-    dbConnect.updateChannel(user_id, channel_name, channel_description, channel_id)
+    dbConnect.updateChannel(user_id, channel_name,
+                            channel_description, channel_id)
     return redirect(f"/detail/{channel_id}")
 
 
