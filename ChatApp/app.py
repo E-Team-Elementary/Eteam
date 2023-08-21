@@ -365,8 +365,14 @@ def delete_channel(channel_id):
             return redirect("/")
         else:
             dbConnect.deleteChannel(channel_id)
-            channels = dbConnect.getChannelAll()
             return redirect("/")
+
+
+@app.route("/test")
+def test():
+    from_url = request.referrer
+    print(from_url)
+    return redirect("/logout")
 
 
 # チャンネル詳細ページの表示
@@ -412,7 +418,7 @@ def detail_group(channel_id):
         user_id=user_id,
         channels=channels,
         friend_list=friend_list,
-        notes=notes
+        notes=notes,
     )
 
 
