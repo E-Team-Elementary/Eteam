@@ -106,18 +106,56 @@ class dbConnect:
             cur.close()
 
     # 友達追加処理
-    def addFriend(receiver_id, sender_id):
+    # def addFriend(receiver_id, sender_id):
+    #     try:
+    #         connection = DB.getConnection()
+    #         cursor = connection.cursor()
+
+    #         sql = "INSERT INTO friends (user_id,friends_id) VALUES (%s, %s);"
+
+    #         cursor.execute(sql, (receiver_id, sender_id))
+    #         connection.commit()
+
+    #     except Exception as e:
+    #         print(e + "が発生しています")
+    #         abort(500)
+    #     finally:
+    #         cursor.close()
+    def addFriendAndChannel(sender_id, receiver_id, channel_name, channel_description, channel_type):
         try:
             connection = DB.getConnection()
-            cursor = connection.cursor()
 
-            sql = "INSERT INTO friends (user_id,friends_id) VALUES (%s, %s);"
+            # トランザクションの開始
+            with connection.cursor() as cursor:
+                # フレンド追加
+                sql_add_friend = "INSERT INTO friends (user_id, friend_id) VALUES (%s, %s);"
+                cursor.execute(sql_add_friend, (sender_id, receiver_id))
 
-            cursor.execute(sql, (receiver_id, sender_id))
-            connection.commit()
+                # チャンネル追加
+                sql_add_channel = "INSERT INTO channels (channel_name, abstract, type) VALUES (%s, %s, %s);"
+                cursor.execute(sql_add_channel, (channel_name,
+                               channel_description, channel_type))
+                connection.commit()
+
+            return "success"
 
         except Exception as e:
             print(e + "が発生しています")
+            # ロールバック処理
+            connection.rollback()
+            return "error"
+
+    def deleteFriendRequest(sender_id, receiver_id):
+        try:
+            connection = DB.getConnection()
+            cursor = connection.cursor()
+            sql = "DELETE FROM friend_requests WHERE (sender_id = %s AND receiver_id = %s)\
+                OR (sender_id = %s AND receiver_id = %s);"
+            cursor.execute(
+                sql, (sender_id, receiver_id, receiver_id, sender_id))
+            connection.commit()
+        except Exception as err:
+            print(err + "が発生しました")
             abort(500)
         finally:
             cursor.close()
@@ -198,7 +236,8 @@ class dbConnect:
             # チャンネル情報をchannelsテーブルに挿入
             cursor = connection.cursor()
             sql = "INSERT INTO channels (channel_name, abstract, type) VALUES (%s, %s, %s);"
-            cursor.execute(sql, (newChannelName, newChannelDescription, channelType))
+            cursor.execute(
+                sql, (newChannelName, newChannelDescription, channelType))
             connection.commit()
 
             # 挿入したチャンネル情報のidを取得
@@ -234,7 +273,8 @@ class dbConnect:
             cursor = connection.cursor()
             sql = "UPDATE channels SET uid=%s, name=%s, abstract=%s WHERE id=%s;"
             cursor.execute(
-                sql, (user_id, newChannelName, newChannelDescription, channel_id)
+                sql, (user_id, newChannelName,
+                      newChannelDescription, channel_id)
             )
             connection.commit()
         except Exception as err:
