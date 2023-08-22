@@ -353,20 +353,24 @@ def update_channel():
 
 
 # チャンネルの削除
-@app.route("/delete/<channel_id>")
+@app.route("/delete_channel")
 def delete_channel(channel_id):
     user_id = session.get("user_id")
     if user_id is None:
         return redirect("/login")
     else:
         channel = dbConnect.getChannelById(channel_id)
-        if channel["user_id"] != user_id:
-            flash("チャンネルは作成者のみ削除可能です")
-            return redirect("/")
-        else:
+        if channel["user_id"] == user_id and channel["type"] == TYPE.PUBLIC_CHAT:
             dbConnect.deleteChannel(channel_id)
-            channels = dbConnect.getChannelAll()
-            return redirect("/")
+            return redirect("/public/<channel_id>")
+        
+        elif channel["type"] == TYPE.GROUP_CHAT:
+            dbConnect.deleteChannel(channel_id)
+            return redirect("/group/<channel_id>")
+        
+        else:
+            flash("チャンネルはできません")
+
 
 
 # チャンネル詳細ページの表示
@@ -377,9 +381,11 @@ def detail_friend(channel_id):
         return redirect("/login")
 
     channel = dbConnect.getChannelById(channel_id)
-    messages = dbConnect.getMessageAll(channel_id)
+    messages = dbConnect.getMessageAll(channel_id, type=TYPE.CHAT_MESSAGE)
+    notes = dbConnect.getMessageAll(channel_id, type=TYPE.NOTE_MESSAGE)
     channel_type = channel["type"]
     channels = dbConnect.getChannels(user_id, channel_type)
+    friend_list = dbConnect.getFriendsList(user_id, user_id)
 
     return render_template(
         "home/home.html",
@@ -387,6 +393,8 @@ def detail_friend(channel_id):
         channel=channel,
         user_id=user_id,
         channels=channels,
+        friend_list=friend_list,
+        notes=notes
     )
 
 
