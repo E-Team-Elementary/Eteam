@@ -387,9 +387,9 @@ def update_channel():
     channel_name = request.form.get("channelTitle")
     channel_description = request.form.get("channelDescription")
 
-    dbConnect.updateChannel(user_id, channel_name,
-                            channel_description, channel_id)
-    return redirect(f"/detail/{channel_id}")
+    dbConnect.updateChannel(user_id, channel_name, channel_description, channel_id)
+    return redirect("/detail/{channel_id}")
+
 
 
 # チャンネルの削除
@@ -469,7 +469,8 @@ def detail_public(channel_id):
         return redirect("/login")
 
     channel = dbConnect.getChannelById(channel_id)
-    messages = dbConnect.getMessageAll(channel_id)
+    messages = dbConnect.getMessageAll(channel_id, type=TYPE.CHAT_MESSAGE)
+    notes = dbConnect.getMessageAll(channel_id, type=TYPE.NOTE_MESSAGE)
     channel_type = channel["type"]
     channels = dbConnect.getChannels(user_id, channel_type)
 
