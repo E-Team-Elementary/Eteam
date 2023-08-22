@@ -373,6 +373,15 @@ def delete_channel(channel_id):
 
 
 
+@app.route("/test")
+def test():
+    from_url = request.referrer
+    print(from_url)
+    return redirect("/logout")
+
+
+
+
 # チャンネル詳細ページの表示
 @app.route("/friend/<channel_id>")
 def detail_friend(channel_id):
