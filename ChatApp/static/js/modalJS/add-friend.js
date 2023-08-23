@@ -22,6 +22,7 @@ let userData;
 form.addEventListener("submit", function (event) {
   event.preventDefault();
   result.innerHTML = "";
+  sendButton.style.display = "none";
 
   let emailData = new FormData(form);
   form.reset();
