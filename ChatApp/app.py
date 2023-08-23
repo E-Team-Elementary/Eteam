@@ -287,9 +287,9 @@ def home():
     if user_id is None:
         return redirect("/login")
     else:
-        channel_type = 0
-        channels = dbConnect.getChannels(user_id, channel_type)
-    return render_template("home/home-base.html", channels=channels, user_id=user_id)
+        channels = dbConnect.getChannels(user_id, TYPE.FRIEND_CHAT )
+        friend_list = dbConnect.getFriendsList(user_id, user_id)
+    return render_template("home/home-base.html", channels=channels, user_id=user_id,friend_list=friend_list,)
 
 
 # グループ画面の表示
@@ -439,11 +439,15 @@ def detail_friend(channel_id):
     user_id = session.get("user_id")
     if user_id is None:
         return redirect("/login")
-
+    
     channel = dbConnect.getChannelById(channel_id)
-    messages = dbConnect.getMessageAll(channel_id)
+    messages = dbConnect.getMessageAll(channel_id, type=TYPE.CHAT_MESSAGE)
+    notes = dbConnect.getMessageAll(channel_id, type=TYPE.NOTE_MESSAGE)
     channel_type = channel["type"]
     channels = dbConnect.getChannels(user_id, channel_type)
+
+    # 友達一覧の取得
+    friend_list = dbConnect.getFriendsList(user_id, user_id)
 
     return render_template(
         "home/home.html",
@@ -451,8 +455,9 @@ def detail_friend(channel_id):
         channel=channel,
         user_id=user_id,
         channels=channels,
+        friend_list=friend_list,
+        notes=notes,
     )
-
 
 @app.route("/group/<channel_id>")
 def detail_group(channel_id):
@@ -522,6 +527,35 @@ def add_message():
 
     return redirect(f"/group/{channel_id}")
 
+@app.route("/post_message_friend", methods=["POST"])
+def add_message_friend():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/login")
+
+    message = request.form.get("message")
+    channel_id = request.form.get("channel_id")
+    type = request.form.get("message_type")
+
+    dbConnect.createMessage(channel_id, user_id, message, type)
+
+    return redirect(f"/home/{channel_id}")
+
+@app.route("/post_message_public", methods=["POST"])
+def add_message_public():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/login")
+
+    message = request.form.get("message")
+    channel_id = request.form.get("channel_id")
+    type = request.form.get("message_type")
+
+    dbConnect.createMessage(channel_id, user_id, message, type)
+
+    return redirect(f"/public/{channel_id}")
+
+
 
 # メッセージの削除
 @app.route("/delete_message", methods=["POST"])
@@ -538,6 +572,33 @@ def delete_message():
 
     return redirect(f"/group/{channel_id}")
 
+@app.route("/delete_message_friend", methods=["POST"])
+def delete_message_friend():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/login")
+
+    message_id = request.form.get("message_id")
+    channel_id = request.form.get("channel_id")
+
+    if message_id:
+        dbConnect.deleteMessage(message_id)
+
+    return redirect(f"/friend/{channel_id}")
+
+@app.route("/delete_message_public", methods=["POST"])
+def delete_message_public():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/login")
+
+    message_id = request.form.get("message_id")
+    channel_id = request.form.get("channel_id")
+
+    if message_id:
+        dbConnect.deleteMessage(message_id)
+
+    return redirect(f"/public/{channel_id}")
 
 """
 エラーハンドリング

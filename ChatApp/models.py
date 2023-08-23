@@ -228,20 +228,20 @@ class dbConnect:
         finally:
             cursor.close()
 
-    def getChannels(user_id, channnel_type):
+    def getChannels(user_id, channel_type):
         try:
             connection = DB.getConnection()
             cursor = connection.cursor()
 
             # publicチャットの時は、where句でuser_idを指定しない
-            if channnel_type == TYPE.PUBLIC_CHAT:
+            if channel_type == TYPE.PUBLIC_CHAT:
                 sql = "SELECT c.*,cu.user_id FROM channels as c INNER JOIN channel_users as cu ON c.id = cu.channel_id\
                 WHERE c.type = %s ORDER BY c.updated_at DESC;"
-                cursor.execute(sql, (channnel_type))
+                cursor.execute(sql, (channel_type))
             else:
                 sql = "SELECT c.*,cu.user_id FROM channels as c INNER JOIN channel_users as cu ON c.id = cu.channel_id\
                 WHERE cu.user_id = %s AND c.type = %s ORDER BY c.updated_at DESC;"
-                cursor.execute(sql, (user_id, channnel_type))
+                cursor.execute(sql, (user_id, channel_type))
 
             channel = cursor.fetchall()
             return channel
