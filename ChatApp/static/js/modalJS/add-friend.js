@@ -38,7 +38,8 @@ form.addEventListener("submit", function (event) {
       result.innerHTML += "<p>メールアドレス: " + userData.email + "</p>";
       sendButton.style.display = "block";
     } else {
-      result.innerHTML = "<p>ユーザーが見つかりませんでした。</p>";
+      response = JSON.parse(xhr1.responseText);
+      result.innerHTML = "<p>" + response.message + "</p>";
     }
   };
 });

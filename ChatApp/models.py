@@ -160,6 +160,28 @@ class dbConnect:
         finally:
             cursor.close()
 
+    def checkFriend(user_id1, user_id2):
+        try:
+            connection = DB.getConnection()
+            cursor = connection.cursor()
+            sql = """
+                SELECT CASE WHEN EXISTS (
+                SELECT * FROM friends
+                WHERE (user_id = %s AND friend_id = %s)
+                OR (user_id = %s AND friend_id = %s)
+                ) THEN 'Yes'
+                ELSE 'No'
+                END AS is_friend;
+                """
+            cursor.execute(sql, (user_id1, user_id2, user_id2, user_id1))
+            result = cursor.fetchone()
+            return result
+        except Exception as err:
+            print(err + "が発生しました")
+            abort(500)
+        finally:
+            cursor.close()
+
     """
     チャンネル
     """

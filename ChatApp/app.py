@@ -140,33 +140,46 @@ def logout():
 #     return jsonify(user_info), 200  # JSONでユーザー情報を返却
 @app.route("/search_user", methods=["POST"])
 def search_user():
+    user_id = session.get("user_id")
+    # if user_id is None:
+    #     return redirect("/login")
     email = request.form.get("email")
+    current_user_id = user_id
     user = dbConnect.getUserByEmail(email)
 
-    current_user_id = session.get("user_id")
-    if not user or current_user_id == user["id"]:
+    if not user:
         response = make_response(json.dumps(
-            {"message": "user not found"}), 404)
+            {"message": "ユーザーが見つかりませんでした。"}), 404)
         response.mimetype = "application/json"
         return response
-    else:
-        user_info = {
-            "user_id": user["id"],
-            "user_name": user["user_name"],
-            "email": user["email"],
-        }
+
+    if current_user_id == user["id"]:
+        response = jsonify({"message": "自分のメールアドレスは検索できません。"})
+        response.status_code = 400
+        return response
+
+    is_friend = dbConnect.checkFriend(user["id"], current_user_id)
+    if is_friend["is_friend"] == "Yes":
+        response = jsonify({"message": "このユーザーは既にフレンドです。"})
+        response.status_code = 400
+        return response
+
+    user_info = {
+        "user_id": user["id"],
+        "user_name": user["user_name"],
+        "email": user["email"],
+    }
     return jsonify(user_info), 200
 
 
 # フレンド申請を作成する
 @app.route("/friend_request", methods=["POST"])
 def friend_request():
-    # user_id = session.get("user_id")
+    user_id = session.get("user_id")
     # if user_id is None:
     #     return redirect('/login')
     data = request.json
-    # sender_id = user_id
-    sender_id = session.get("user_id")
+    sender_id = user_id
     receiver_id = data.get("receiver_id")
     if sender_id is None or receiver_id is None:
         return (
