@@ -42,7 +42,7 @@
                 <span class="channel-description">{{channel.abstract}}</span>
                 {% if channel.user_id == user_id %}
                 <span>
-                  <span id="edit-channel"
+                  <span onclick="editChannel({{channel.id}}, '{{channel.channel_name}}', '{{channel.abstract}}')"
                     ><i class="bi bi-vector-pen"></i
                   ></span>
                   <span onclick="deleteChannel({{channel.id}})"
@@ -61,6 +61,36 @@
             </button>
           </span>
         </div>
+
+        <div id="edit-modal" class="edit-modal">
+            <div class="edit-public-modal">
+              <div class="edit-public">
+                <div class="edit-modal-header">
+                  <i class="bi bi-people-fill edit-icon"></i>
+                  <h2>チャンネル修正</h2>
+                </div>
+                <div class="edit-container">
+                  <form id="edit-name" class="edit-name" action="/update_channel" method="POST">
+                    <input
+                      name="editPublicName"
+                      class="edit-public-name"
+                      id="edit-public-name"
+                      type="text"
+                      placeholder="Channel Name"
+                    />
+                    <textarea
+                      name="editDescription"
+                      type="text"
+                      class="edit-description"
+                      id="editDescription"
+                      placeholder="チャンネルの説明を記入"
+                    ></textarea>
+                    <button type="submit" class="public-edit-button">修正</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
 
         <div id="delete-public-modal" class="delete-public-modal">
           <div class="delete-public-content">
@@ -133,56 +163,7 @@
       </span>
     </footer>
 
-    <div id="add-modal" class="add-modal">
-      <div id="add-friend" class="add-friend">
-        <div><i class="bi bi-person-fill-add add-person"></i></div>
-        <h2>フレンド申請</h2>
-        <div class="add-container">
-          <div class="friend-search">
-            <input class="input-email" type="email" placeholder="Email" />
-            <button type="submit" class="search-button">
-              <i class="bi bi-search"></i>
-            </button>
-          </div>
-          <div class="candidate-area">
-            <select name="candidate-person" class="candidate-person" size="10">
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-            </select>
-            <button type="submit" class="add-button">追加</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="request-modal" class="request-modal">
-      <div id="accept-group" class="accept-group">
-        <div><i class="bi bi-person-fill request-person"></i></div>
-        <h2>フレンド申請一覧</h2>
-        <div class="request-container">
-          <div class="friend-request">
-            <select name="request-all" class="friend-all" size="999">
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-            </select>
-            <div class="all-button">
-              <button type="submit" class="accept-button">承認</button>
-              <button type="submit" class="deny-button">拒否</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+ 
 
     <script type="text/javascript">
       // prettier-ignore
@@ -201,5 +182,10 @@
       async
       src="../../static/js/modalJS/delete-channel.js"
     ></script>
-  </body>
+    
+    <script
+      type="text/javascript" 
+      async 
+      src="../../static/js/modalJS/edit-public.js">
+    </script>
 </html>
