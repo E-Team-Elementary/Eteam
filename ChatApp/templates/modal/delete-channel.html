@@ -1,15 +1,18 @@
-<div id="delete-channel-modal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h5>Delete channel</h5>
-      <span class="modalClose" id="delete-page-close-button">×</span>
-    </div>
-    <div class="modal-body">
-      <p>削除ボタンを押すとチャンネルが消えます</p>
-      <p>本当によろしいですか？</p>
-      <a id="delete-confirmation-link">
-        <button id="delete-channel-confirmation-button">削除</button>
-      </a>
+<div id="delete-channel-modal" class="delete-public-modal">
+  <div class="delete-public-content">
+    <h1>チャンネル削除</h1>
+    <div class="delete-public-container">
+      <div class="delete-modal-body">
+        <p>本当に消えます。</p>
+        <p>よろしいですか？</p>
+        <form action="/delete_channel" method="POST" id="delete-channel-bottom">
+          <input type="hidden" value="{{ channel.id }}" name="channel_id" />
+          <input type="hidden" value="1" name="type" />
+          <button type="submit" class="delete-channel-confirmation-button">
+            削除
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 </div>

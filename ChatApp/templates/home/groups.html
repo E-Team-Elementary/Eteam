@@ -16,7 +16,8 @@
           <span class="room_name">{{ channel.channel_name }}</span>
           <span>
             <a class="bi bi-pen"></a>
-            <a class="bi bi-trash3"></a>
+            <button class="bi bi-trash3" id="delete-channel-button"></button>
+            {% include 'modal/delete-channel.html' %}
           </span>
         </div>
         <div class="right">
@@ -272,5 +273,10 @@
       async
       src="../../static/js/scroll-message.js"
     ></script>
+    <script
+    type="text/javascript"
+    async
+    src="../../static/js/Channels/delete-channel.js"
+  ></script>
   </body>
 </html>
