@@ -384,11 +384,11 @@ def update_channel():
         return redirect("/login")
 
     channel_id = request.form.get("channel_id")
-    channel_name = request.form.get("channelTitle")
-    channel_description = request.form.get("channelDescription")
+    channel_name = request.form.get("editPublicName")
+    channel_description = request.form.get("editDescription")
 
     dbConnect.updateChannel(user_id, channel_name, channel_description, channel_id)
-    return redirect("/detail/{channel_id}")
+    return redirect("/public/{channel_id}")
 
 
 
