@@ -57,7 +57,7 @@ input::placeholder {
   color: white;
 }
 
-.send-info{
+.send-info {
   height: 30%;
   width: 80%;
   display: flex;
@@ -76,11 +76,19 @@ input::placeholder {
   cursor: pointer;
 }
 
-.signup{
+.signup {
   font-size: 15px;
   color: white;
   background-color: transparent;
   border: none;
   margin-top: 10px;
   cursor: pointer;
+}
+
+.alert-danger {
+  color: #c9303e;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  margin-right: auto;
+  padding: 10px 20px;
 }
