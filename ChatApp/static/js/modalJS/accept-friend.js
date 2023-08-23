@@ -54,23 +54,32 @@ friendRequest.addEventListener("change", () => {
   }
 });
 
+friendRequest.addEventListener("click", (e) => {
+  const isOption = e.target.tagName === "OPTION";
+  if (isOption) {
+    allButton.style.display = "block";
+  }
+});
+document.addEventListener("click", (e) => {
+  const isOption = friendRequest.contains(e.target);
+  if (!isOption) {
+    allButton.style.display = "none";
+  }
+});
+
 // フレンド申請　承認・拒否送信
 const acceptButton = document.getElementById("accept-button");
 const denyButton = document.getElementById("deny-button");
-const requestResult = document.getElementById("request-result");
 
 acceptButton.addEventListener("click", () => {
   const selectedOption = friendRequest.options[friendRequest.selectedIndex];
-  console.log(selectedOption);
   const senderId = selectedOption.value;
-  console.log(senderId);
   sendFriendResponse(senderId, "accept");
 });
 
 denyButton.addEventListener("click", () => {
   const selectedOption = friendRequest.options[friendRequest.selectedIndex];
   const senderId = selectedOption.value;
-  console.log(senderId);
   sendFriendResponse(senderId, "deny");
 });
 
