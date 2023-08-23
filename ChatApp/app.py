@@ -7,6 +7,8 @@ from flask import (
     flash,
     abort,
     jsonify,
+    make_response,
+    json,
 )
 from datetime import timedelta
 import hashlib
@@ -140,7 +142,7 @@ def logout():
 def search_user():
     email = request.form.get("email")
     user = dbConnect.getUserByEmail(email)
-    if not user:
+    if not user or email == user["email"]:
         response = make_response(json.dumps(
             {"message": "user not found"}), 404)
         response.mimetype = "application/json"  # レスポンスのmimetypeをapplication/jsonに設定
@@ -387,9 +389,9 @@ def update_channel():
     channel_name = request.form.get("channelTitle")
     channel_description = request.form.get("channelDescription")
 
-    dbConnect.updateChannel(user_id, channel_name, channel_description, channel_id)
+    dbConnect.updateChannel(user_id, channel_name,
+                            channel_description, channel_id)
     return redirect("/detail/{channel_id}")
-
 
 
 # チャンネルの削除
