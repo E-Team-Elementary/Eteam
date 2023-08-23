@@ -141,8 +141,7 @@ def search_user():
     email = request.form.get("email")
     user = dbConnect.getUserByEmail(email)
     if not user:
-        response = make_response(json.dumps(
-            {"message": "user not found"}), 404)
+        response = make_response(json.dumps({"message": "user not found"}), 404)
         response.mimetype = "application/json"  # レスポンスのmimetypeをapplication/jsonに設定
         return response
     else:
@@ -233,7 +232,6 @@ def friend_request_result():
     dbConnect.deleteFriendRequest(sender_id, receiver_id)
 
     if response == "accept":
-
         channel_type = TYPE.FRIEND_CHAT
         channel_description = ""
         sender_data = dbConnect.getUserById(sender_id)
@@ -241,7 +239,8 @@ def friend_request_result():
         channel_name = sender_data["user_name"] + receiver_data["user_name"]
 
         result = dbConnect.addFriendAndChannel(
-            sender_id, receiver_id, channel_name, channel_description, channel_type)
+            sender_id, receiver_id, channel_name, channel_description, channel_type
+        )
 
         if result == "success":
             flash("フレンド申請を承認しました")
@@ -318,8 +317,7 @@ def create_group():
         )
 
         # チャンネル管理者登録
-        dbConnect.addChannelUser(
-            channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
+        dbConnect.addChannelUser(channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
 
         # チャンネルメンバー登録
         friends = request.form.getlist("friends")
@@ -330,8 +328,7 @@ def create_group():
         return redirect("/group")
     else:
         error = "既に同じ名前のチャンネルが存在しています"
-        # return render_template("error/error.html", error_message=error)
-        return error
+        return render_template("error/error.html", error_message=error)
 
 
 # Public画面の表示
@@ -366,8 +363,7 @@ def add_channel():
             channel_name, channel_description, TYPE.PUBLIC_CHAT
         )
         # チャンネルユーザー登録処理
-        dbConnect.addChannelUser(
-            channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
+        dbConnect.addChannelUser(channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
 
         return redirect("/public")
 
@@ -389,7 +385,6 @@ def update_channel():
 
     dbConnect.updateChannel(user_id, channel_name, channel_description, channel_id)
     return redirect("/detail/{channel_id}")
-
 
 
 # チャンネルの削除
@@ -489,19 +484,11 @@ def detail_public(channel_id):
 # メッセージの投稿
 
 
-# chat部分で投稿された内容をmessagesテーブルに挿入
-"""
- todo:
- セッション周りのコメントを外す、リダイレクト先を指定する
-"""
-
-
 @app.route("/post_message", methods=["POST"])
 def add_message():
     user_id = session.get("user_id")
     if user_id is None:
         return redirect("/login")
-    # user_id = request.form.get("user_id")
 
     message = request.form.get("message")
     channel_id = request.form.get("channel_id")
