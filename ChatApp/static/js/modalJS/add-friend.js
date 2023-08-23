@@ -21,8 +21,10 @@ let userData;
 
 form.addEventListener("submit", function (event) {
   event.preventDefault();
+  result.innerHTML = "";
 
   let emailData = new FormData(form);
+  form.reset();
 
   const xhr1 = new XMLHttpRequest();
   xhr1.open("POST", "/search_user");

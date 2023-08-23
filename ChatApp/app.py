@@ -7,6 +7,8 @@ from flask import (
     flash,
     abort,
     jsonify,
+    make_response,
+    json,
 )
 from datetime import timedelta
 import hashlib
@@ -140,10 +142,11 @@ def logout():
 def search_user():
     email = request.form.get("email")
     user = dbConnect.getUserByEmail(email)
-    if not user:
+    current_user_id = session.get("user_id")
+    if not user or current_user_id == user["id"]:
         response = make_response(json.dumps(
             {"message": "user not found"}), 404)
-        response.mimetype = "application/json"  # レスポンスのmimetypeをapplication/jsonに設定
+        response.mimetype = "application/json"
         return response
     else:
         user_info = {
