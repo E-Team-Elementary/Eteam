@@ -6,6 +6,10 @@ body {
   margin: 0px;
 }
 
+.all-content {
+  height: 99.99999vh;
+}
+
 a {
   color: inherit;
   text-decoration: none;
