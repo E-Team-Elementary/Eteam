@@ -406,20 +406,25 @@ def update_channel():
 
 
 # チャンネルの削除
-@app.route("/delete/<channel_id>")
-def delete_channel(channel_id):
+@app.route("/delete_channel", methods=["POST"])
+def delete_channel():
     user_id = session.get("user_id")
     if user_id is None:
         return redirect("/login")
     else:
-        channel = dbConnect.getChannelById(channel_id)
-        if channel["user_id"] != user_id:
-            flash("チャンネルは作成者のみ削除可能です")
-            return redirect("/")
-        else:
-            dbConnect.deleteChannel(channel_id)
-            return redirect("/")
-
+        channel_id = request.form.get("channel_id")
+        dbConnect.deleteChannel_group(channel_id)
+        return redirect(f"/group")
+        
+@app.route("/delete_channel_public", methods=["POST"])
+def delete_channel_public():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/login")
+    else:
+        channel_id = request.form.get("channel_id")
+        dbConnect.deleteChannel_public(channel_id)
+        return redirect(f"/public")
 
 @app.route("/test")
 def test():
@@ -493,6 +498,7 @@ def detail_public(channel_id):
         channel=channel,
         user_id=user_id,
         channels=channels,
+        notes=notes,
     )
 
 

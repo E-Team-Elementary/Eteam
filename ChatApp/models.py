@@ -305,19 +305,53 @@ class dbConnect:
         finally:
             cursor.close()
 
-    # チャンネルの削除
-    def deleteChannel(channel_id):
+        # グループのチャンネルの削除
+    def deleteChannel_group(channel_id):
         try:
             connection = DB.getConnection()
-            cursor = connection.cursor()
-            sql = "DELETE FROM channels WHERE id=%s;"
-            cursor.execute(sql, (channel_id))
+            cursor1 = connection.cursor()
+            sql1 = "DELETE me from messages me where me.channel_id=%s;"
+            cursor1.execute(sql1, (channel_id))
+
+            cursor2 = connection.cursor()
+            sql2 = "DELETE cu from channel_users cu where cu.channel_id=%s;"
+            cursor2.execute(sql2, (channel_id))
+
+            cursor3 = connection.cursor()
+            sql3 = "DELETE c from channels c where c.id=%s"
+            cursor3.execute(sql3, (channel_id))
             connection.commit()
         except Exception as err:
             print(err + "が発生しています")
             abort(500)
         finally:
-            cursor.close()
+            cursor1.close()
+            cursor2.close()
+            cursor3.close()
+
+     # パブリックのチャンネルの削除
+    def deleteChannel_public(channel_id):
+        try:
+            connection = DB.getConnection()
+            cursor1 = connection.cursor()
+            sql1 = "DELETE me from messages me where me.channel_id=%s;"
+            cursor1.execute(sql1, (channel_id))
+
+            cursor2 = connection.cursor()
+            sql2 = "DELETE cu from channel_users cu where cu.channel_id=%s;"
+            cursor2.execute(sql2, (channel_id))
+
+            cursor3 = connection.cursor()
+            sql3 = "DELETE c from channels c where c.id=%s"
+            cursor3.execute(sql3, (channel_id))
+            connection.commit()
+        except Exception as err:
+            print(err + "が発生しています")
+            abort(500)
+        finally:
+            cursor1.close()
+            cursor2.close()
+            cursor3.close()
 
     """
     グループ

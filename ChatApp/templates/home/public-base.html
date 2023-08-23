@@ -100,10 +100,16 @@
                 <p>本当に消えます。</p>
                 <p>よろしいですか？</p>
                 <form
-                  action="/delete/"
+                  action="/delete_channel_public"
                   method="POST"
                   id="public-channel-delete"
                 >
+                <input
+                type="hidden"
+                value="1"
+                name="channel_id"
+              />
+                <input type="hidden" value="2" name="type" />
                   <button
                     type="submit"
                     class="delete-channel-confirmation-button"
