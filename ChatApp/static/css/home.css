@@ -6,6 +6,10 @@ body {
   margin: 0px;
 }
 
+.all-content {
+  height: 99.99999vh;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -115,6 +119,7 @@ header {
   align-items: center;
   justify-items: center;
   text-align: center;
+  overflow: auto;
 }
 
 .friends-content {
@@ -134,6 +139,7 @@ header {
   background-color: #e0e0e0;
   border-radius: 50px;
   margin-top: 10px;
+  flex-shrink: 0;
 }
 
 .test-friend-moji {
@@ -145,6 +151,8 @@ header {
   transform: translateY(-50%);
   width: 5em;
   text-align: center;
+  overflow: hidden;
+  overflow-wrap: break-word;
 }
 
 .plus-friend {
@@ -184,8 +192,28 @@ header {
   background-color: #f2f2f2;
   border-bottom: solid 2px #e2e2e2;
   display: flex;
-  align-items: end;
-  justify-content: center;
+  align-items: flex-end;
+  flex-flow: column;
+  margin-top: auto;
+  height: 100%;
+  position: relative;
+}
+
+.select-friends {
+  font-size: 25px;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+#selecticon1 {
+  font-size: 50px;
+  margin: 5px;
+}
+
+#selecticon2 {
+  font-size: 50px;
+  margin: 5px;
 }
 
 .input-area {
@@ -193,9 +221,19 @@ header {
   align-items: center;
   justify-content: center;
   border-radius: 0px;
-  width: 90%;
+  width: 100%;
   height: 15%;
   margin: 10px 0px 20px 10px;
+  align-items: flex-end;
+  margin-top: auto;
+  position: absolute;
+  bottom: 0;
+}
+
+.input-area-form {
+  width: 90%;
+  height: 100%;
+  display: flex;
 }
 
 .talk-input {
@@ -229,17 +267,67 @@ header {
 
 .note {
   background-image: url(../img/note_background.png);
-  width: 50%;
   flex-grow: 1;
+  width: 50%;
+  background-color: #f2f2f2;
   border-bottom: solid 2px #e2e2e2;
   display: flex;
-  align-items: end;
-  justify-content: center;
+  align-items: flex-end;
+  flex-flow: column;
+  margin-top: auto;
+  height: 100%;
+  position: relative;
+}
+
+.note-area {
+  width: 100%;
+  height: 80%;
+  overflow: auto;
+}
+
+.notes {
+  display: flex;
+  flex-direction: column;
+  word-wrap: break-word;
+}
+
+.my-note {
+  display: flex;
+  color: #5d627b;
+  background: white;
+  border-top: solid 5px #5d627b;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.22);
+  width: 80%;
+  padding: 0.5em 1em;
+  margin: 1em;
+}
+
+.your-note {
+  display: flex;
+  flex-flow: column;
+  padding: 0.5em 1em;
+  margin: 1em;
+  width: 80%;
+  color: #5d627b;
+  background: white;
+  border-top: solid 5px #5d627b;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.22);
+}
+
+.my-note-detail {
+  position: relative;
+  width: 90%;
+  margin: 0;
+  padding: 0.7em 0 0.4em 1em;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0.1em;
+  white-space: pre-wrap;
 }
 
 footer {
   height: 15%;
-  width: 100vw;
+  width: 100%;
   background-color: white;
   display: flex;
   align-items: center;
@@ -257,7 +345,7 @@ footer {
   margin: 0;
 }
 
-.bi-person-fill {
+.bi-people-fill {
   color: white;
   background-color: #133d64;
 }
@@ -268,4 +356,160 @@ footer {
   background-color: transparent;
   font-size: 50px;
   margin: 10px;
+}
+
+.message-area {
+  width: 100%;
+  height: 80%;
+  overflow: auto;
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  word-wrap: break-word;
+}
+
+.user-name {
+  font-size: 8px;
+  color: grey;
+  margin: 1px 0;
+}
+
+.my-messages {
+  display: flex;
+}
+
+.delete-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  margin-bottom: 1em;
+}
+
+.delete-message-button {
+  background-color: var(--snow);
+  height: 40px;
+  width: 40px;
+  line-height: 47px;
+  padding: 0;
+  margin: 0;
+  bottom: 8px;
+  right: 8px;
+}
+
+.delete-message-button ion-icon {
+  font-size: 1rem;
+}
+
+.box {
+  position: relative;
+  width: 60%;
+  margin: 0;
+  padding: 0.7em 0 0.4em 1em;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0.1em;
+  white-space: pre-wrap;
+}
+
+.box-left {
+  background-color: rgba(139, 147, 159, 0.2);
+  color: var(--navy_blue);
+  border: solid;
+  margin: 1em;
+}
+
+.box-right {
+  background-color: white;
+  color: var(--snow);
+  margin: 1em;
+  margin-left: auto;
+  border: solid;
+}
+
+em {
+  display: inline-block;
+  padding: 0px 5px;
+  font-weight: bold;
+  font-style: normal;
+  color: #333;
+  background-color: #ecde00;
+}
+
+.delete-public-modal {
+  position: fixed;
+  z-index: 999;
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  margin: 0;
+  background: rgba(0, 0, 0, 0);
+  color: black;
+}
+
+.delete-public-content {
+  position: fixed;
+  z-index: 99;
+  left: 37%;
+  top: 25%;
+  height: 45%;
+  width: 25%;
+  /* From https://css.glass */
+  background: rgba(255, 255, 255, 0.01);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 1);
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
+
+.adelete-public-container {
+  width: 100%;
+  height: 50%;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  align-content: center;
+}
+
+.delete-modal-body {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.delete-modal-body p {
+  font-size: 20px;
+  margin: 10px;
+}
+
+.delete-confirmation-link {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.delete-channel-confirmation-button {
+  display: inline-block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  color: white;
+  background-color: darkred;
+  border: 1px solid white;
+  cursor: pointer;
 }

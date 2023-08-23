@@ -119,6 +119,7 @@ header {
   align-items: center;
   justify-items: center;
   text-align: center;
+  overflow: auto;
 }
 
 .friends-content {
@@ -138,6 +139,7 @@ header {
   background-color: #e0e0e0;
   border-radius: 50px;
   margin-top: 10px;
+  flex-shrink: 0;
 }
 
 .test-friend-moji {
@@ -149,6 +151,8 @@ header {
   transform: translateY(-50%);
   width: 5em;
   text-align: center;
+  overflow: hidden;
+  overflow-wrap: break-word;
 }
 
 .plus-friend {

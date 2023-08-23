@@ -15,15 +15,20 @@
       <div class="header-items">
         <div class="left">
           <span class="room_name">{{channel.channel_name}}</span>
-          <span>
-            <a class="bi bi-pen"></a>
-            <a class="bi bi-trash3"></a>
-          </span>
         </div>
         <div class="right">
-          <input class="search" type="text" placeholder="search" />
-          <button>
+          <input
+            class="search"
+            id="search_word"
+            type="text"
+            placeholder="search"
+            value=""
+          />
+          <button id="button_search">
             <i class="bi bi-search"></i>
+          </button>
+          <button id="delete_search">
+            <i class="bi bi-x"></i>
           </button>
         </div>
       </div>
@@ -31,6 +36,7 @@
 
     <div class="container">
       <div class="sidebar">
+        <div class="friends-list"></div>
         <div class="friends-content">
           <button id="open-modal" class="plus-friend">
             <i class="bi bi-person-fill-add"></i>
@@ -43,15 +49,121 @@
 
       <div class="content">
         <div class="talk">
+          <div class="message-area" id="message-area">
+            <div class="messages">
+              {% if messages|length > 0 %} {% for message in messages %} {% if
+              message.user_id == user_id %}
+              <div class="my-messages">
+                <p class="box box-right">{{ message.content }}</p>
+                <form
+                  action="/delete_message_public"
+                  method="POST"
+                  class="delete-bottom"
+                >
+                  <input
+                    type="hidden"
+                    value="{{ channel.id }}"
+                    name="channel_id"
+                  />
+                  <button
+                    class="bi bi-trash3"
+                    name="message_id"
+                    value="{{ message.id }}"
+                  >
+                    <ion-icon
+                      name="trash-bin-outline"
+                      style="color: #122543"
+                    ></ion-icon>
+                  </button>
+                </form>
+              </div>
+              {% else %}
+              <div class="messages">
+                <p class="user-name">{{ message.user_name }}</p>
+                <p class="box box-left">{{ message.content }}</p>
+              </div>
+              {% endif %} {% endfor %} {% else %}
+              <div id="no-message"><p>まだメッセージがありません</p></div>
+              {% endif %}
+            </div>
+          </div>
           <div class="input-area">
-            <textarea type="text" class="talk-input" wrap="soft"></textarea>
-            <button class="send-button"><i class="bi bi-send-fill"></i></button>
+            <form
+              action="/post_message_public"
+              method="POST"
+              class="input-area-form"
+            >
+              <textarea
+                type="text"
+                name="message"
+                class="talk-input"
+                wrap="soft"
+              ></textarea>
+              <input type="hidden" value="{{ channel.id }}" name="channel_id" />
+              <input type="hidden" value="0" name="message_type" />
+              <button class="send-button">
+                <i class="bi bi-send-fill"></i>
+              </button>
+            </form>
           </div>
         </div>
         <div class="note">
+          <div class="note-area" id="note-area">
+            <div class="notes">
+              {% if notes|length > 0 %}{% for note in notes %}{% if note.user_id
+              == user_id %}
+              <div class="my-note">
+                <p class="my-note-detail">{{ note.content }}</p>
+                <form
+                  action="/delete_message_public"
+                  method="POST"
+                  class="delete-bottom"
+                >
+                  <input
+                    type="hidden"
+                    value="{{ channel.id }}"
+                    name="channel_id"
+                  />
+                  <button
+                    class="bi bi-trash3"
+                    name="message_id"
+                    value="{{ note.id }}"
+                  >
+                    <ion-icon
+                      name="trash-bin-outline"
+                      style="color: #122543"
+                    ></ion-icon>
+                  </button>
+                </form>
+              </div>
+              {% else %}
+              <div class="your-note">
+                <p class="user-name">{{ note.user_name }}</p>
+                <p class="my-note-detail">{{ note.content }}</p>
+              </div>
+              {% endif %} {% endfor %} {% else %}
+              <div id="no-note"><p>まだノートがありません</p></div>
+              {% endif %}
+            </div>
+          </div>
           <div class="input-area">
-            <textarea type="text" class="talk-input" wrap="soft"></textarea>
-            <button class="send-button"><i class="bi bi-send-fill"></i></button>
+            <form
+              action="/post_message_public"
+              method="POST"
+              class="input-area-form"
+            >
+              <textarea
+                type="text"
+                name="message"
+                class="talk-input"
+                wrap="soft"
+              ></textarea>
+              <input type="hidden" value="{{ channel.id }}" name="channel_id" />
+              <input type="hidden" value="1" name="message_type" />
+              <button class="send-button">
+                <i class="bi bi-send-fill"></i>
+              </button>
+            </form>
           </div>
         </div>
       </div>
@@ -78,23 +190,28 @@
         <h2>フレンド申請</h2>
         <div class="add-container">
           <div class="friend-search">
-            <input class="input-email" type="email" placeholder="Email" />
-            <button type="submit" class="search-button">
-              <i class="bi bi-search"></i>
-            </button>
+            <form name="friend-search-form" id="friend-search-form">
+              <input
+                id="input-email"
+                class="input-email"
+                type="email"
+                placeholder="Email"
+                name="email"
+              />
+              <button type="submit" class="search-button" id="friend-serach">
+                <i class="bi bi-search"></i>
+              </button>
+            </form>
           </div>
-          <div class="candidate-area">
-            <select name="candidate-person" class="candidate-person" size="10">
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-            </select>
-            <button type="submit" class="add-button">追加</button>
-          </div>
+          <!-- フレンド申請 -->
+          <div id="searched-user"></div>
+          <button
+            id="friend-request-button"
+            type="submit"
+            style="display: none"
+          >
+            申請
+          </button>
         </div>
       </div>
     </div>
@@ -104,19 +221,21 @@
         <div><i class="bi bi-person-fill request-person"></i></div>
         <h2>フレンド申請一覧</h2>
         <div class="request-container">
+          <div id="request-result"></div>
           <div class="friend-request">
-            <select name="request-all" class="friend-all" size="999">
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-            </select>
-            <div class="all-button">
-              <button type="submit" class="accept-button">承認</button>
-              <button type="submit" class="deny-button">拒否</button>
+            <select
+              name="request-all"
+              class="friend-all"
+              id="friend-request"
+              size="999"
+            ></select>
+            <div class="all-button" id="all-button" style="display: none">
+              <button type="submit" class="accept-button" id="accept-button">
+                承認
+              </button>
+              <button type="submit" class="deny-button" id="deny-button">
+                拒否
+              </button>
             </div>
           </div>
         </div>
@@ -143,6 +262,21 @@
       type="text/javascript"
       async
       src="../../static/js/modalJs/add-public.js"
+    ></script>
+    <script
+      type="text/javascript"
+      async
+      src="../../static/js/search.js"
+    ></script>
+    <script
+      type="text/javascript"
+      async
+      src="../../static/js/scroll-message.js"
+    ></script>
+    <script
+      type="text/javascript"
+      async
+      src="../../static/js/flaskMessage.js"
     ></script>
   </body>
 </html>

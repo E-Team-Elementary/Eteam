@@ -10,7 +10,7 @@
   <body>
     <!-- ヘッダー部 -->
     <header>
-      <span class="return"><i class="bi bi-caret-left-fill"></i></span>
+      <span class="return"><a href="{{ url_for('group') }}" class="bi bi-caret-left-fill"></a></span>
       <div class="header-items">
         <div class="left">
           <span class="room_name">{{ channel.channel_name }}</span>
@@ -230,25 +230,26 @@
         <div><i class="bi bi-person-fill request-person"></i></div>
         <h2>フレンド申請一覧</h2>
         <div class="request-container">
+          <div id="request-result"></div>
           <div class="friend-request">
-            <select name="request-all" class="friend-all" size="999">
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-              <option>aaaaaaaa</option>
-            </select>
-            <div class="all-button">
-              <button type="submit" class="accept-button">承認</button>
-              <button type="submit" class="deny-button">拒否</button>
+            <select
+              name="request-all"
+              class="friend-all"
+              id="friend-request"
+              size="999"
+            ></select>
+            <div class="all-button" id="all-button" style="display: none">
+              <button type="submit" class="accept-button" id="accept-button">
+                承認
+              </button>
+              <button type="submit" class="deny-button" id="deny-button">
+                拒否
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
-
     <script type="text/javascript">
       // prettier-ignore
       const user_id = JSON.parse('{{ user_id|tojson }}');
