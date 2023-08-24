@@ -394,9 +394,23 @@ def add_channel():
         return render_template("error/error.html", error_message=error)
 
 
-# チャンネルの更新
-@app.route("/update_channel", methods=["POST"])
-def update_channel():
+# チャンネルの削除
+@app.route("/delete_channel", methods=["POST"])
+def delete_channel():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/login")
+    else:
+        channel_id = request.form.get("channel_id")
+        dbConnect.deleteChannel_group(channel_id)
+
+        flash("チャンネルを削除しました")
+        return redirect(f"/group")
+
+
+# publicチャンネルの更新
+@app.route("/update_channel_public", methods=["POST"])
+def update_channel_public():
     user_id = session.get("user_id")
     if user_id is None:
         return redirect("/login")
@@ -410,19 +424,7 @@ def update_channel():
     return redirect("/public")
 
 
-# チャンネルの削除
-@app.route("/delete_channel", methods=["POST"])
-def delete_channel():
-    user_id = session.get("user_id")
-    if user_id is None:
-        return redirect("/login")
-    else:
-        channel_id = request.form.get("channel_id")
-        dbConnect.deleteChannel_group(channel_id)
-
-        return redirect(f"/group")
-
-
+# publicチャンネルの削除
 @app.route("/delete_channel_public", methods=["POST"])
 def delete_channel_public():
     user_id = session.get("user_id")
