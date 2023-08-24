@@ -341,9 +341,35 @@ def public():
     return render_template("home/public-base.html", channels=channels, user_id=user_id)
 
 
+# パブリック詳細ページの表示
+@app.route("/public/<channel_id>")
+def detail_public(channel_id):
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/login")
+
+    channel = dbConnect.getChannelById(channel_id)
+    messages = dbConnect.getMessageAll(channel_id, type=TYPE.CHAT_MESSAGE)
+    notes = dbConnect.getMessageAll(channel_id, type=TYPE.NOTE_MESSAGE)
+    channel_type = channel["type"]
+    channels = dbConnect.getChannels(user_id, channel_type)
+
+    return render_template(
+        "home/public.html",
+        messages=messages,
+        channel=channel,
+        user_id=user_id,
+        channels=channels,
+        notes=notes,
+    )
+
+
+"""
+トークルーム作成(フレンドとのチャットは承認した時点で作成される為、フレンドにコードあり)
+"""
+
+
 # グループ作成
-
-
 @app.route("/group_create", methods=["POST"])
 def create_group():
     user_id = session.get("user_id")
@@ -377,9 +403,7 @@ def create_group():
         return render_template("error/error.html", error_message=error)
 
 
-# チャンネルの追加
-
-
+# パブリックチャット作成
 @app.route("/public", methods=["POST"])
 def add_channel():
     user_id = session.get("user_id")
@@ -406,6 +430,11 @@ def add_channel():
         return render_template("error/error.html", error_message=error)
 
 
+"""
+トークルーム削除(フレンドは削除されない仕様)
+"""
+
+
 # Groupチャンネルの削除
 @app.route("/delete_channel", methods=["POST"])
 def delete_channel():
@@ -418,6 +447,26 @@ def delete_channel():
 
         flash("チャンネルを削除しました")
         return redirect(f"/group")
+
+
+# publicチャンネルの削除
+@app.route("/delete_channel_public", methods=["POST"])
+def delete_channel_public():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/login")
+    else:
+        channel_id = request.form.get("channel_id")
+        dbConnect.deleteChannel_public(channel_id)
+
+        flash("チャンネルを削除しました")
+        return redirect(f"/public")
+
+
+"""
+トークルーム情報更新
+チャンネル名とチャンネル概要の更新
+"""
 
 
 # Groupチャンネルの更新
@@ -452,74 +501,30 @@ def update_channel_public():
     return redirect("/public")
 
 
-# publicチャンネルの削除
-@app.route("/delete_channel_public", methods=["POST"])
-def delete_channel_public():
-    user_id = session.get("user_id")
-    if user_id is None:
-        return redirect("/login")
-    else:
-        channel_id = request.form.get("channel_id")
-        dbConnect.deleteChannel_public(channel_id)
-
-        flash("チャンネルを削除しました")
-        return redirect(f"/public")
-
-
-@app.route("/group/<channel_id>")
-def detail_group(channel_id):
-    user_id = session.get("user_id")
-    if user_id is None:
-        return redirect("/login")
-
-    channel = dbConnect.getChannelById(channel_id)
-    messages = dbConnect.getMessageAll(channel_id, type=TYPE.CHAT_MESSAGE)
-    notes = dbConnect.getMessageAll(channel_id, type=TYPE.NOTE_MESSAGE)
-    channel_type = TYPE.GROUP_CHAT
-    channels = dbConnect.getChannels(user_id, channel_type)
-
-    # 友達一覧の取得
-    friend_list = dbConnect.getFriendsList(user_id, user_id)
-
-    return render_template(
-        "home/groups.html",
-        messages=messages,
-        channel=channel,
-        user_id=user_id,
-        channels=channels,
-        friend_list=friend_list,
-        notes=notes,
-    )
-
-
-@app.route("/public/<channel_id>")
-def detail_public(channel_id):
-    user_id = session.get("user_id")
-    if user_id is None:
-        return redirect("/login")
-
-    channel = dbConnect.getChannelById(channel_id)
-    messages = dbConnect.getMessageAll(channel_id, type=TYPE.CHAT_MESSAGE)
-    notes = dbConnect.getMessageAll(channel_id, type=TYPE.NOTE_MESSAGE)
-    channel_type = channel["type"]
-    channels = dbConnect.getChannels(user_id, channel_type)
-
-    return render_template(
-        "home/public.html",
-        messages=messages,
-        channel=channel,
-        user_id=user_id,
-        channels=channels,
-        notes=notes,
-    )
-
-
 """
 メッセージ
 """
 # メッセージの投稿
 
 
+# フレンドとのメッセージ、ノートの送信
+@app.route("/post_message_friend", methods=["POST"])
+def add_message_friend():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/login")
+
+    message = request.form.get("message")
+    channel_id = request.form.get("channel_id")
+    # typeによってメッセージとノートの投稿を分けている
+    type = request.form.get("message_type")
+
+    dbConnect.createMessage(channel_id, user_id, message, type)
+
+    return redirect(f"/home/{channel_id}")
+
+
+# グループでのメッセージ、ノートの送信
 @app.route("/post_message", methods=["POST"])
 def add_message():
     user_id = session.get("user_id")
@@ -531,25 +536,12 @@ def add_message():
     type = request.form.get("message_type")
 
     dbConnect.createMessage(channel_id, user_id, message, type)
-
+    
     return redirect(f"/group/{channel_id}")
 
 
-@app.route("/post_message_friend", methods=["POST"])
-def add_message_friend():
-    user_id = session.get("user_id")
-    if user_id is None:
-        return redirect("/login")
 
-    message = request.form.get("message")
-    channel_id = request.form.get("channel_id")
-    type = request.form.get("message_type")
-
-    dbConnect.createMessage(channel_id, user_id, message, type)
-
-    return redirect(f"/friend/{channel_id}")
-
-
+# パブリックでのメッセージ、ノートの送信
 @app.route("/post_message_public", methods=["POST"])
 def add_message_public():
     user_id = session.get("user_id")
@@ -566,21 +558,9 @@ def add_message_public():
 
 
 # メッセージの削除
-@app.route("/delete_message", methods=["POST"])
-def delete_message():
-    user_id = session.get("user_id")
-    if user_id is None:
-        return redirect("/login")
-
-    message_id = request.form.get("message_id")
-    channel_id = request.form.get("channel_id")
-
-    if message_id:
-        dbConnect.deleteMessage(message_id)
-
-    return redirect(f"/group/{channel_id}")
 
 
+# フレンドとのメッセージ、ノートの削除
 @app.route("/delete_message_friend", methods=["POST"])
 def delete_message_friend():
     user_id = session.get("user_id")
@@ -596,6 +576,23 @@ def delete_message_friend():
     return redirect(f"/friend/{channel_id}")
 
 
+# グループでのメッセージ、ノートの削除
+@app.route("/delete_message", methods=["POST"])
+def delete_message():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/login")
+
+    message_id = request.form.get("message_id")
+    channel_id = request.form.get("channel_id")
+
+    if message_id:
+        dbConnect.deleteMessage(message_id)
+
+    return redirect(f"/group/{channel_id}")
+
+
+# パブリックでのメッセージ、ノートの削除
 @app.route("/delete_message_public", methods=["POST"])
 def delete_message_public():
     user_id = session.get("user_id")
