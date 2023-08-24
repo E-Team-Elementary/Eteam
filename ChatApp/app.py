@@ -557,7 +557,7 @@ def add_message_friend():
 
     dbConnect.createMessage(channel_id, user_id, message, type)
 
-    return redirect(f"/home/{channel_id}")
+    return redirect(f"/friend/{channel_id}")
 
 
 @app.route("/post_message_public", methods=["POST"])
