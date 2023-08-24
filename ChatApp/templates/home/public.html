@@ -36,15 +36,6 @@
 
     <div class="container">
       <div class="sidebar">
-        <div class="friends-list"></div>
-        <div class="friends-content">
-          <button id="open-modal" class="plus-friend">
-            <i class="bi bi-person-fill-add"></i>
-          </button>
-          <button id="request-friends" class="request-friends">
-            フレンド申請一覧
-          </button>
-        </div>
       </div>
 
       <div class="content">
@@ -251,32 +242,32 @@
     <script
       type="text/javascript"
       async
-      src="../../static/js/modalJs/add-friend.js"
+      src="{{url_for('static',filename='js/modalJs/add-friend.js')}}"
     ></script>
     <script
       type="text/javascript"
       async
-      src="../../static/js/modalJs/accept-friend.js"
+      src="{{url_for('static',filename='js/modalJs/accept-friend.js')}}"
     ></script>
     <script
       type="text/javascript"
       async
-      src="../../static/js/modalJs/add-public.js"
+      src="{{url_for('static',filename='js/modalJs/add-public.js')}}"
     ></script>
     <script
       type="text/javascript"
       async
-      src="../../static/js/search.js"
+      src="{{url_for('static',filename='js/search.js')}}"
     ></script>
     <script
       type="text/javascript"
       async
-      src="../../static/js/scroll-message.js"
+      src="{{url_for('static',filename='js/scroll-message.js')}}"
     ></script>
     <script
       type="text/javascript"
       async
-      src="../../static/js/flaskMessage.js"
+      src="{{url_for('static',filename='js/flaskMessage.js')}}"
     ></script>
   </body>
 </html>
