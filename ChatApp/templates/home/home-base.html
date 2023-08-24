@@ -18,9 +18,10 @@
           </div>
 
           <!-- フラッシュメッセージがある時にアラートを表示する -->
-          {% for message in get_flashed_messages() %}
+          {% with messages = get_flashed_messages() %} {% for message in
+          get_flashed_messages() %}
           <input type="hidden" id="flashMessage" value="{{message}}" />
-          {% endfor %}
+          {% endfor %} {% endwith %}
           <div class="right">
             <input class="search" type="text" placeholder="search" />
             <button>

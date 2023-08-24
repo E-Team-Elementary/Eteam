@@ -8,6 +8,7 @@ function deleteChannel(channel_id) {
   const inputHiddenElement = document.createElement("input");
   inputHiddenElement.type = "hidden";
   inputHiddenElement.id = "public_delete_channel_id";
+  inputHiddenElement.name = "channel_id";
   inputHiddenElement.value = channel_id;
   deleteForm.insertBefore(inputHiddenElement, deleteForm.firstChild);
 }
