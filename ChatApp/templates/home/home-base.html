@@ -22,12 +22,7 @@
           get_flashed_messages() %}
           <input type="hidden" id="flashMessage" value="{{message}}" />
           {% endfor %} {% endwith %}
-          <div class="right">
-            <input class="search" type="text" placeholder="search" />
-            <button>
-              <i class="bi bi-search"></i>
-            </button>
-          </div>
+          <div class="right"></div>
         </div>
       </header>
 
@@ -71,7 +66,7 @@
       </div>
 
       <footer>
-        <a class="exit" href="{{ url_for('login') }}"
+        <a class="exit" href="{{ url_for('logout') }}"
           ><i class="bi bi-three-dots"></i
         ></a>
 
@@ -149,12 +144,12 @@
     <script
       type="text/javascript"
       async
-      src="{{url_for('static',filename='js/modalJs/add-friend.js')}}"
+      src="{{url_for('static',filename='js/modalJS/add-friend.js')}}"
     ></script>
     <script
       type="text/javascript"
       async
-      src="{{url_for('static',filename='js/modalJs/accept-friend.js')}}"
+      src="{{url_for('static',filename='js/modalJS/accept-friend.js')}}"
     ></script>
     <!-- <script
       type="text/javascript"

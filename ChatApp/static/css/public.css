@@ -325,7 +325,7 @@ footer {
   margin: 0;
 }
 
-.bi-people-fill {
+.bi-globe-asia-australia {
   color: white;
   background-color: #133d64;
 }
@@ -452,7 +452,7 @@ em {
   justify-content: center;
 }
 
-.adelete-public-container {
+.delete-public-container {
   width: 100%;
   height: 50%;
   display: flex;
