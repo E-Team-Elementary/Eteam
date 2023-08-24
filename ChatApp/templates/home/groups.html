@@ -10,13 +10,18 @@
   <body>
     <!-- ヘッダー部 -->
     <header>
-      <span class="return"><a href="{{ url_for('group') }}" class="bi bi-caret-left-fill"></a></span>
+      <span class="return"
+        ><a href="{{ url_for('group') }}" class="bi bi-caret-left-fill"></a
+      ></span>
       <div class="header-items">
         <div class="left">
           <span class="room_name">{{ channel.channel_name }}</span>
           <span>
             <a class="bi bi-pen"></a>
-            <button class="bi bi-trash3" id="delete-channel-button"></button>
+            <button
+              class="delete-button bi bi-trash3"
+              id="delete-channel-button"
+            ></button>
             {% include 'modal/delete-channel.html' %}
           </span>
         </div>
@@ -34,7 +39,6 @@
           <button id="delete_search">
             <i class="bi bi-x"></i>
           </button>
-        </div>
         </div>
       </div>
     </header>
@@ -200,10 +204,12 @@
             <i class="bi bi-people-fill add-people add-people-head"></i>
             <h2 class="add-people-head">グループ作成</h2>
           </div>
+          <!--入力にエラーがあった時は下にメッセージを表示する-->
+          <div class="input-check-message" id="input-check-message"></div>
           <div class="create-container">
             <form class="group-name" action="/group_create" method="POST">
               <input class="input-name" type="text" placeholder="Group Name"
-              name="channelTitle"">
+              id="input-group-name" name="channelTitle"">
               <input
                 type="text"
                 class="input-name"
@@ -218,7 +224,13 @@
                 </div>
                 {% endfor %}
               </div>
-              <button type="submit" class="create-button">作成</button>
+              <button
+                type="submit"
+                class="create-button"
+                onclick="return checkForm();"
+              >
+                作成
+              </button>
             </form>
           </div>
         </div>
@@ -275,9 +287,14 @@
       src="../../static/js/scroll-message.js"
     ></script>
     <script
-    type="text/javascript"
-    async
-    src="../../static/js/Channels/delete-channel.js"
-  ></script>
+      type="text/javascript"
+      async
+      src="../../static/js/Channels/delete-channel.js"
+    ></script>
+    <script
+      type="text/javascript"
+      async
+      src="../../static/js/modalJS/group-input-check.js"
+    ></script>
   </body>
 </html>

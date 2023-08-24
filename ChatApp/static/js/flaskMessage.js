@@ -1,8 +1,8 @@
-message = document.getElementById("flashMessage").value;
+message = document.getElementById("flashMessage");
 
 if (message) {
   Swal.fire({
     icon: "success",
-    text: message,
+    text: message.value,
   });
 }

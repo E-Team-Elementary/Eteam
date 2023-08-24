@@ -121,20 +121,25 @@ class dbConnect:
     #         abort(500)
     #     finally:
     #         cursor.close()
-    def addFriendAndChannel(sender_id, receiver_id, channel_name, channel_description, channel_type):
+    def addFriendAndChannel(
+        sender_id, receiver_id, channel_name, channel_description, channel_type
+    ):
         try:
             connection = DB.getConnection()
 
             # トランザクションの開始
             with connection.cursor() as cursor:
                 # フレンド追加
-                sql_add_friend = "INSERT INTO friends (user_id, friend_id) VALUES (%s, %s);"
+                sql_add_friend = (
+                    "INSERT INTO friends (user_id, friend_id) VALUES (%s, %s);"
+                )
                 cursor.execute(sql_add_friend, (sender_id, receiver_id))
 
                 # チャンネル追加
                 sql_add_channel = "INSERT INTO channels (channel_name, abstract, type) VALUES (%s, %s, %s);"
-                cursor.execute(sql_add_channel, (channel_name,
-                               channel_description, channel_type))
+                cursor.execute(
+                    sql_add_channel, (channel_name, channel_description, channel_type)
+                )
                 connection.commit()
 
             return "success"
@@ -151,8 +156,7 @@ class dbConnect:
             cursor = connection.cursor()
             sql = "DELETE FROM friend_requests WHERE (sender_id = %s AND receiver_id = %s)\
                 OR (sender_id = %s AND receiver_id = %s);"
-            cursor.execute(
-                sql, (sender_id, receiver_id, receiver_id, sender_id))
+            cursor.execute(sql, (sender_id, receiver_id, receiver_id, sender_id))
             connection.commit()
         except Exception as err:
             print(err + "が発生しました")
@@ -258,8 +262,7 @@ class dbConnect:
             # チャンネル情報をchannelsテーブルに挿入
             cursor = connection.cursor()
             sql = "INSERT INTO channels (channel_name, abstract, type) VALUES (%s, %s, %s);"
-            cursor.execute(
-                sql, (newChannelName, newChannelDescription, channelType))
+            cursor.execute(sql, (newChannelName, newChannelDescription, channelType))
             connection.commit()
 
             # 挿入したチャンネル情報のidを取得
@@ -289,15 +292,12 @@ class dbConnect:
         finally:
             cursor.close
 
-    def updateChannel(user_id, newChannelName, newChannelDescription, channel_id):
+    def updateChannel(newChannelName, newChannelDescription, channel_id):
         try:
             connection = DB.getConnection()
             cursor = connection.cursor()
-            sql = "UPDATE channels SET uid=%s, name=%s, abstract=%s WHERE id=%s;"
-            cursor.execute(
-                sql, (user_id, newChannelName,
-                      newChannelDescription, channel_id)
-            )
+            sql = "UPDATE channels SET channel_name=%s, abstract=%s WHERE id=%s;"
+            cursor.execute(sql, (newChannelName, newChannelDescription, channel_id))
             connection.commit()
         except Exception as err:
             print(err + "が発生しました")
@@ -305,7 +305,8 @@ class dbConnect:
         finally:
             cursor.close()
 
-        # グループのチャンネルの削除
+    # グループのチャンネルの削除
+
     def deleteChannel_group(channel_id):
         try:
             connection = DB.getConnection()
@@ -329,7 +330,7 @@ class dbConnect:
             cursor2.close()
             cursor3.close()
 
-     # パブリックのチャンネルの削除
+    # パブリックのチャンネルの削除
     def deleteChannel_public(channel_id):
         try:
             connection = DB.getConnection()
