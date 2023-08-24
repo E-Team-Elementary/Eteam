@@ -25,9 +25,9 @@ app.permanent_session_lifetime = timedelta(days=30)
 """
 ユーザー認証 
 """
+
+
 # サインアップページの表示
-
-
 @app.route("/signup")
 def signup():
     return render_template("registration/signup.html")
@@ -99,50 +99,17 @@ def logout():
     return redirect("/login")
 
 
-# ホーム画面の表示
-# @app.route('/')
-# def index():
-#     user_id = session.get("user_id")
-#     if user_id is None:
-#         return redirect('/login')
-#     else:
-#         channels = dbConnect.getChannelAll()
-#         channels.reverse()
-#     return render_template('index.html', channels=channels, user_id=user_id)
-
-
 """
 フレンド
 """
 
 
-# Emailでユーザーを検索　（フレンド申請用）
-# @app.route("/search_user", methods=["POST"])
-# def search_user():
-#     # user_id = session.get("user_id")
-#     # if user_id is None:
-#     #     return redirect('/login')
-#     email = request.form.get("email")
-#     user = dbConnect.getUserByEmail(email)
-#     if not user:
-#         # ユーザーが存在しない場合は空のuser_infoを返す
-#         user_info = {
-#             "user_id": "",
-#             "user_name": "",
-#             "email": "",
-#         }
-#     else:
-#         user_info = {
-#             "user_id": user["id"],
-#             "user_name": user["user_name"],
-#             "email": user["email"],
-#         }
-#     return jsonify(user_info), 200  # JSONでユーザー情報を返却
+# フレンド追加機能
 @app.route("/search_user", methods=["POST"])
 def search_user():
     user_id = session.get("user_id")
-    # if user_id is None:
-    #     return redirect("/login")
+    if user_id is None:
+        return redirect("/login")
     email = request.form.get("email")
     current_user_id = user_id
     user = dbConnect.getUserByEmail(email)
@@ -175,8 +142,8 @@ def search_user():
 @app.route("/friend_request", methods=["POST"])
 def friend_request():
     user_id = session.get("user_id")
-    # if user_id is None:
-    #     return redirect('/login')
+    if user_id is None:
+        return redirect("/login")
     data = request.json
     sender_id = user_id
     receiver_id = data.get("receiver_id")
@@ -192,30 +159,22 @@ def friend_request():
     response = jsonify({"redirect_url": redirect_url})
     response.headers["X-Redirect"] = redirect_url
     if result == "success":
-        # return jsonify({"message": "フレンド申請を送りました"}), 200
         flash("フレンド申請を送りました")
     elif result == "duplicate":
-        # return jsonify({"message": "既に申請済みです"}), 422
         flash("既に申請済みです")
     elif result == "error":
-        # return jsonify({"message": "申請に失敗しました"}), 422
         flash("申請に失敗しました")
     return response
 
 
-# ログインユーザーに対して、友達申請一覧を取得し、友達申請一覧画面(仮)に遷移
-"""
- todo:
- フレンド一覧を取得する時、本来はGetメソッドを指定する予定だが、テスト用にPOSTも指定している
- セッション周りのコメントを外す、POSTを指定しない
-"""
+# ログインユーザーに対して、友達申請一覧を取得
 
 
 @app.route("/friend_request")
 def friend_request_list():
-    # user_id = session.get("user_id")
-    # if user_id is None:
-    #    return redirect("/login")
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/login")
 
     user_id = session.get("user_id")
     # ログインユーザーの友達申請一覧を一覧を取得
@@ -238,8 +197,8 @@ def friend_request_list():
 @app.route("/friend-response", methods=["POST"])
 def friend_request_result():
     user_id = session.get("user_id")
-    # if user_id is None:
-    #    return redirect("/login")
+    if user_id is None:
+        return redirect("/login")
 
     data = request.json
     sender_id = data.get("sender_id")
@@ -274,12 +233,11 @@ def friend_request_result():
 
 
 """
-チャンネル
+各画面の表示
 """
 
-# ホーム画面の表示
 
-
+# ホーム画面(フレンド画面)の表示
 @app.route("/")
 def home():
     user_id = session.get("user_id")
@@ -296,9 +254,34 @@ def home():
     )
 
 
+# フレンド詳細ページの表示
+@app.route("/friend/<channel_id>")
+def detail_friend(channel_id):
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/login")
+
+    channel = dbConnect.getChannelById(channel_id)
+    messages = dbConnect.getMessageAll(channel_id, type=TYPE.CHAT_MESSAGE)
+    notes = dbConnect.getMessageAll(channel_id, type=TYPE.NOTE_MESSAGE)
+    channel_type = channel["type"]
+    channels = dbConnect.getChannels(user_id, channel_type)
+
+    # 友達一覧の取得
+    friend_list = dbConnect.getFriendsList(user_id, user_id)
+
+    return render_template(
+        "home/home.html",
+        messages=messages,
+        channel=channel,
+        user_id=user_id,
+        channels=channels,
+        friend_list=friend_list,
+        notes=notes,
+    )
+
+
 # グループ画面の表示
-
-
 @app.route("/group")
 def group():
     user_id = session.get("user_id")
@@ -316,6 +299,44 @@ def group():
         user_id=user_id,
         friend_list=friend_list,
     )
+
+
+# グループ詳細ページの表示
+@app.route("/group/<channel_id>")
+def detail_group(channel_id):
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/login")
+
+    channel = dbConnect.getChannelById(channel_id)
+    messages = dbConnect.getMessageAll(channel_id, type=TYPE.CHAT_MESSAGE)
+    notes = dbConnect.getMessageAll(channel_id, type=TYPE.NOTE_MESSAGE)
+    channel_type = TYPE.GROUP_CHAT
+    channels = dbConnect.getChannels(user_id, channel_type)
+
+    # 友達一覧の取得
+    friend_list = dbConnect.getFriendsList(user_id, user_id)
+
+    return render_template(
+        "home/groups.html",
+        messages=messages,
+        channel=channel,
+        user_id=user_id,
+        channels=channels,
+        friend_list=friend_list,
+        notes=notes,
+    )
+
+
+# Public画面の表示
+@app.route("/public")
+def public():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/login")
+    else:
+        channels = dbConnect.getChannels(user_id, TYPE.PUBLIC_CHAT)
+    return render_template("home/public-base.html", channels=channels, user_id=user_id)
 
 
 # グループ作成
@@ -353,19 +374,6 @@ def create_group():
         return render_template("error/error.html", error_message=error)
 
 
-# Public画面の表示
-
-
-@app.route("/public")
-def public():
-    user_id = session.get("user_id")
-    if user_id is None:
-        return redirect("/login")
-    else:
-        channels = dbConnect.getChannels(user_id, TYPE.PUBLIC_CHAT)
-    return render_template("home/public-base.html", channels=channels, user_id=user_id)
-
-
 # チャンネルの追加
 
 
@@ -394,7 +402,7 @@ def add_channel():
         return render_template("error/error.html", error_message=error)
 
 
-# チャンネルの削除
+# Groupチャンネルの削除
 @app.route("/delete_channel", methods=["POST"])
 def delete_channel():
     user_id = session.get("user_id")
@@ -406,6 +414,22 @@ def delete_channel():
 
         flash("チャンネルを削除しました")
         return redirect(f"/group")
+
+
+# Groupチャンネルの更新
+@app.route("/update_channel_group", methods=["POST"])
+def update_channel_group():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/login")
+
+    channel_id = request.form.get("channel_id")
+    channel_name = request.form.get("editName")
+    channel_description = request.form.get("editDescription")
+
+    dbConnect.updateChannel(channel_name, channel_description, channel_id)
+    flash("チャンネルを編集しました")
+    return redirect("/group/{channel_id}")
 
 
 # publicチャンネルの更新
@@ -438,40 +462,6 @@ def delete_channel_public():
         return redirect(f"/public")
 
 
-@app.route("/test")
-def test():
-    from_url = request.referrer
-    print(from_url)
-    return redirect("/logout")
-
-
-# チャンネル詳細ページの表示
-@app.route("/friend/<channel_id>")
-def detail_friend(channel_id):
-    user_id = session.get("user_id")
-    if user_id is None:
-        return redirect("/login")
-
-    channel = dbConnect.getChannelById(channel_id)
-    messages = dbConnect.getMessageAll(channel_id, type=TYPE.CHAT_MESSAGE)
-    notes = dbConnect.getMessageAll(channel_id, type=TYPE.NOTE_MESSAGE)
-    channel_type = channel["type"]
-    channels = dbConnect.getChannels(user_id, channel_type)
-
-    # 友達一覧の取得
-    friend_list = dbConnect.getFriendsList(user_id, user_id)
-
-    return render_template(
-        "home/home.html",
-        messages=messages,
-        channel=channel,
-        user_id=user_id,
-        channels=channels,
-        friend_list=friend_list,
-        notes=notes,
-    )
-
-
 @app.route("/group/<channel_id>")
 def detail_group(channel_id):
     user_id = session.get("user_id")
@@ -481,7 +471,7 @@ def detail_group(channel_id):
     channel = dbConnect.getChannelById(channel_id)
     messages = dbConnect.getMessageAll(channel_id, type=TYPE.CHAT_MESSAGE)
     notes = dbConnect.getMessageAll(channel_id, type=TYPE.NOTE_MESSAGE)
-    channel_type = channel["type"]
+    channel_type = TYPE.GROUP_CHAT
     channels = dbConnect.getChannels(user_id, channel_type)
 
     # 友達一覧の取得

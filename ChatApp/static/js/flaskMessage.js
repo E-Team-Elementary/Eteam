@@ -1,8 +1,8 @@
-message = document.getElementById("flashMessage");
+const flashMessage = document.getElementById("flashMessage");
 
-if (message) {
+if (flashMessage) {
   Swal.fire({
     icon: "success",
-    text: message.value,
+    text: flashMessage.value,
   });
 }
