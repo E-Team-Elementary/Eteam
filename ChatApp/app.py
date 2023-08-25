@@ -118,8 +118,7 @@ def search_user():
     user = dbConnect.getUserByEmail(email)
 
     if not user:
-        response = make_response(json.dumps(
-            {"message": "ユーザーが見つかりませんでした。"}), 404)
+        response = make_response(json.dumps({"message": "ユーザーが見つかりませんでした。"}), 404)
         response.mimetype = "application/json"
         return response
 
@@ -163,11 +162,11 @@ def friend_request():
     response = jsonify({"redirect_url": redirect_url})
     response.headers["X-Redirect"] = redirect_url
     if result == "success":
-        flash("フレンド申請を送りました")
+        flash("OK:フレンド申請を送りました")
     elif result == "duplicate":
-        flash("既に申請済みです")
+        flash("NG:既に申請済みです")
     elif result == "error":
-        flash("申請に失敗しました")
+        flash("OK:申請に失敗しました")
     return response
 
 
@@ -216,8 +215,7 @@ def friend_request_result():
         channel_description = ""
         sender_data = dbConnect.getUserById(sender_id)
         receiver_data = dbConnect.getUserById(receiver_id)
-        channel_name = sender_data["user_name"] + \
-            ":" + receiver_data["user_name"]
+        channel_name = sender_data["user_name"] + ":" + receiver_data["user_name"]
         role = TYPE.CHAT_ADMIN
 
         result = dbConnect.addFriendAndChannel(
@@ -230,12 +228,12 @@ def friend_request_result():
         )
 
         if result == "success":
-            flash("フレンド申請を承認しました")
+            flash("OK:フレンド申請を承認しました")
         elif result == "error":
-            flash("エラーが発生しました")
+            flash("NG:エラーが発生しました")
 
     elif response == "deny":
-        flash("フレンド申請を拒否しました")
+        flash("NG:フレンド申請を拒否しました")
 
     redirect_url = "/"
     response = jsonify({"redirect_url": redirect_url})
@@ -401,8 +399,7 @@ def create_group():
         )
 
         # チャンネル管理者登録
-        dbConnect.addChannelUser(
-            channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
+        dbConnect.addChannelUser(channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
 
         # チャンネルメンバー登録
         friends = request.form.getlist("friends")
@@ -433,8 +430,7 @@ def add_channel():
             channel_name, channel_description, TYPE.PUBLIC_CHAT
         )
         # チャンネルユーザー登録処理
-        dbConnect.addChannelUser(
-            channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
+        dbConnect.addChannelUser(channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
 
         return redirect("/public")
 
@@ -458,7 +454,7 @@ def delete_channel():
         channel_id = request.form.get("channel_id")
         dbConnect.deleteChannel_group(channel_id)
 
-        flash("チャンネルを削除しました")
+        flash("OK:チャンネルを削除しました")
         return redirect(f"/group")
 
 
@@ -472,7 +468,7 @@ def delete_channel_public():
         channel_id = request.form.get("channel_id")
         dbConnect.deleteChannel_public(channel_id)
 
-        flash("チャンネルを削除しました")
+        flash("OK:チャンネルを削除しました")
         return redirect(f"/public")
 
 
@@ -494,7 +490,7 @@ def update_channel_group():
     channel_description = request.form.get("editDescription")
 
     dbConnect.updateChannel(channel_name, channel_description, channel_id)
-    flash("チャンネルを編集しました")
+    flash("OK:チャンネルを編集しました")
     return redirect(f"/group/{channel_id}")
 
 
@@ -510,7 +506,7 @@ def update_channel_public():
     channel_description = request.form.get("editDescription")
 
     dbConnect.updateChannel(channel_name, channel_description, channel_id)
-    flash("チャンネルを編集しました")
+    flash("OK:チャンネルを編集しました")
     return redirect("/public")
 
 
@@ -534,7 +530,7 @@ def add_message_friend():
 
     dbConnect.createMessage(channel_id, user_id, message, type)
 
-    return redirect(f"/home/{channel_id}")
+    return redirect(f"/friend/{channel_id}")
 
 
 # グループでのメッセージ、ノートの送信
