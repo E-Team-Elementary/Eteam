@@ -31,13 +31,19 @@
           <div class="friends-list">
             {% if channels|length > 0 %} {% for channels in channels %}
             <a class="test-friend" href="/friend/{{ channels.id }}"
-              ><span class="test-friend-moji"
+              ><span class="test-friend-moji" id="friend-name{{loop.index0}}"
                 >{{ channels.channel_name }}</span
               ></a
             >
             {% endfor %} {% else %}
             <div></div>
             {% endif %}
+            <input
+              type="hidden"
+              name="friend_volume"
+              value="{{channels | length}}"
+              id="friend_volume"
+            />
           </div>
           <div class="friends-content">
             <button id="open-modal" class="plus-friend">
@@ -141,6 +147,10 @@
       </div>
     </div>
 
+    <script type="text/javascript">
+      const user_name = {{ user_name|tojson }};
+    </script>
+
     <script
       type="text/javascript"
       async
@@ -160,6 +170,11 @@
       type="text/javascript"
       async
       src="{{url_for('static',filename='js/flaskMessage.js')}}"
+    ></script>
+    <script
+      type="text/javascript"
+      async
+      src="{{url_for('static',filename='js/friendNameChange.js')}}"
     ></script>
   </body>
 </html>

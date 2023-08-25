@@ -59,7 +59,9 @@ def userSignup():
         else:
             dbConnect.createUser(user_id, user_name, email, password)
             UserId = str(user_id)
+            UserName = str(user_name)
             session["user_id"] = UserId
+            session["user_name"] = UserName
             return redirect("/")
     return redirect("/signup")
 
@@ -88,6 +90,7 @@ def userLogin():
                 flash("パスワードが間違っています！")
             else:
                 session["user_id"] = user["id"]
+                session["user_name"] = user["user_name"]
                 return redirect("/")
     return redirect("/login")
 
@@ -115,8 +118,7 @@ def search_user():
     user = dbConnect.getUserByEmail(email)
 
     if not user:
-        response = make_response(json.dumps(
-            {"message": "ユーザーが見つかりませんでした。"}), 404)
+        response = make_response(json.dumps({"message": "ユーザーが見つかりませんでした。"}), 404)
         response.mimetype = "application/json"
         return response
 
@@ -213,11 +215,16 @@ def friend_request_result():
         channel_description = ""
         sender_data = dbConnect.getUserById(sender_id)
         receiver_data = dbConnect.getUserById(receiver_id)
-        channel_name = sender_data["user_name"] + receiver_data["user_name"]
+        channel_name = sender_data["user_name"] + ":" + receiver_data["user_name"]
         role = TYPE.CHAT_ADMIN
 
         result = dbConnect.addFriendAndChannel(
-            sender_id, receiver_id, channel_name, channel_description, channel_type, role
+            sender_id,
+            receiver_id,
+            channel_name,
+            channel_description,
+            channel_type,
+            role,
         )
 
         if result == "success":
@@ -246,12 +253,14 @@ def home():
     if user_id is None:
         return redirect("/login")
     else:
+        user_name = session.get("user_name")
         channels = dbConnect.getChannels(user_id, TYPE.FRIEND_CHAT)
         friend_list = dbConnect.getFriendsList(user_id, user_id)
     return render_template(
         "home/home-base.html",
         channels=channels,
         user_id=user_id,
+        user_name=user_name,
         friend_list=friend_list,
     )
 
@@ -263,6 +272,7 @@ def detail_friend(channel_id):
     if user_id is None:
         return redirect("/login")
 
+    user_name = session.get("user_name")
     channel = dbConnect.getChannelById(channel_id)
     messages = dbConnect.getMessageAll(channel_id, type=TYPE.CHAT_MESSAGE)
     notes = dbConnect.getMessageAll(channel_id, type=TYPE.NOTE_MESSAGE)
@@ -277,6 +287,7 @@ def detail_friend(channel_id):
         messages=messages,
         channel=channel,
         user_id=user_id,
+        user_name=user_name,
         channels=channels,
         friend_list=friend_list,
         notes=notes,
@@ -388,8 +399,7 @@ def create_group():
         )
 
         # チャンネル管理者登録
-        dbConnect.addChannelUser(
-            channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
+        dbConnect.addChannelUser(channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
 
         # チャンネルメンバー登録
         friends = request.form.getlist("friends")
@@ -420,8 +430,7 @@ def add_channel():
             channel_name, channel_description, TYPE.PUBLIC_CHAT
         )
         # チャンネルユーザー登録処理
-        dbConnect.addChannelUser(
-            channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
+        dbConnect.addChannelUser(channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
 
         return redirect("/public")
 
@@ -482,7 +491,7 @@ def update_channel_group():
 
     dbConnect.updateChannel(channel_name, channel_description, channel_id)
     flash("チャンネルを編集しました")
-    return redirect("/group/{channel_id}")
+    return redirect(f"/group/{channel_id}")
 
 
 # publicチャンネルの更新
@@ -536,9 +545,8 @@ def add_message():
     type = request.form.get("message_type")
 
     dbConnect.createMessage(channel_id, user_id, message, type)
-    
-    return redirect(f"/group/{channel_id}")
 
+    return redirect(f"/group/{channel_id}")
 
 
 # パブリックでのメッセージ、ノートの送信
