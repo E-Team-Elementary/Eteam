@@ -150,6 +150,33 @@
                       ></ion-icon>
                     </button>
                   </form>
+                  <form
+                    action="/post_message"
+                    method="POST"
+                    class="delete-bottom"
+                  >
+                    <input
+                      type="hidden"
+                      value="{{ message.content }}"
+                      name="message"
+                    />
+                    <input
+                      type="hidden"
+                      value="{{ channel.id }}"
+                      name="channel_id"
+                    />
+                    <input type="hidden" value="1" name="message_type" />
+                    <button
+                      class="bi bi-trash3"
+                      name="message_id"
+                      value="{{ message.id }}"
+                    >
+                      <ion-icon
+                        name="trash-bin-outline"
+                        style="color: #122543"
+                      ></ion-icon>
+                    </button>
+                  </form>
                 </div>
                 {% else %}
                 <div class="messages">
