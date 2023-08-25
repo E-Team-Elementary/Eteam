@@ -8,14 +8,15 @@
     <title>HOME</title>
   </head>
   <body>
-  
     <header>
       <span class="return"
         ><a href="{{ url_for('home') }}" class="bi bi-caret-left-fill"></a
       ></span>
       <div class="header-items">
         <div class="left">
-          <span class="room_name">{{ channel.channel_name }}</span>
+          <span class="room_name" id="channel_name_title"
+            >{{ channel.channel_name }}</span
+          >
           <span> </span>
         </div>
         <div class="right">
@@ -33,7 +34,6 @@
             <i class="bi bi-x"></i>
           </button>
         </div>
-        </div>
       </div>
     </header>
     <!-- サイドバー部-->
@@ -43,13 +43,19 @@
         <div class="friends-list">
           {% if channels|length > 0 %} {% for channels in channels %}
           <a class="test-friend" href="/friend/{{ channels.id }}"
-            ><span class="test-friend-moji"
+            ><span class="test-friend-moji" id="friend-name{{loop.index0}}"
               >{{ channels.channel_name }}</span
             ></a
           >
           {% endfor %} {% else %}
           <div></div>
           {% endif %}
+          <input
+            type="hidden"
+            name="friend_volume"
+            value="{{channels | length}}"
+            id="friend_volume"
+          />
         </div>
         <div class="friends-content">
           <button id="open-modal" class="plus-friend">
@@ -102,7 +108,11 @@
             </div>
           </div>
           <div class="input-area">
-            <form action="/post_message_friend" method="POST" class="input-area-form">
+            <form
+              action="/post_message_friend"
+              method="POST"
+              class="input-area-form"
+            >
               <textarea
                 type="text"
                 name="message"
@@ -157,7 +167,11 @@
             </div>
           </div>
           <div class="input-area">
-            <form action="/post_message_friend" method="POST" class="input-area-form">
+            <form
+              action="/post_message_friend"
+              method="POST"
+              class="input-area-form"
+            >
               <textarea
                 type="text"
                 name="message"
@@ -173,8 +187,7 @@
           </div>
         </div>
       </div>
-     </div>
-
+    </div>
 
     <footer>
       <a class="exit" href="{{ url_for('logout') }}"
@@ -190,7 +203,6 @@
         ></a>
       </span>
     </footer>
- 
 
     <div id="add-modal" class="add-modal">
       <div id="add-friend" class="add-friend">
@@ -224,7 +236,6 @@
       </div>
     </div>
 
-
     <div id="request-modal" class="request-modal">
       <div id="accept-group" class="accept-group">
         <div><i class="bi bi-person-fill request-person"></i></div>
@@ -251,8 +262,10 @@
       </div>
     </div>
 
-
-      <script
+    <script type="text/javascript">
+      const user_name = {{ user_name|tojson }};
+    </script>
+    <script
       type="text/javascript"
       async
       src="{{url_for('static',filename='js/modalJS/add-friend.js')}}"
@@ -276,6 +289,11 @@
       type="text/javascript"
       async
       src="{{url_for('static',filename='js/flaskMessage.js')}}"
+    ></script>
+    <script
+      type="text/javascript"
+      async
+      src="{{url_for('static',filename='js/friendNameChange.js')}}"
     ></script>
   </body>
 </html>
