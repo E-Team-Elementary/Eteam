@@ -420,10 +420,27 @@ class dbConnect:
             cursor.execute(sql, (channel_id, user_id, message, type))
             connection.commit()
         except Exception as err:
-            print(err + "が発生しています")
+            print(str(err) + "が発生しています")
             abort(500)
         finally:
             cursor.close()
+
+    def copyMessage(channel_id, user_id, message):
+        try:
+            connection = DB.getConnection()
+
+            with connection.cursor() as cursor:
+                sql = "INSERT INTO messages(channel_id, user_id, content, type) VALUES(%s, %s, %s, %s)"
+                cursor.execute(sql, (channel_id, user_id,
+                               message, TYPE.CHAT_MESSAGE))
+                cursor.execute(sql, (channel_id, user_id,
+                               message, TYPE.NOTE_MESSAGE))
+
+                connection.commit()
+        except Exception as err:
+            print(err + "が発生しています")
+            connection.rollback()
+            abort(500)
 
     def deleteMessage(message_id):
         try:

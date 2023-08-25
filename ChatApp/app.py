@@ -118,7 +118,8 @@ def search_user():
     user = dbConnect.getUserByEmail(email)
 
     if not user:
-        response = make_response(json.dumps({"message": "ユーザーが見つかりませんでした。"}), 404)
+        response = make_response(json.dumps(
+            {"message": "ユーザーが見つかりませんでした。"}), 404)
         response.mimetype = "application/json"
         return response
 
@@ -215,7 +216,8 @@ def friend_request_result():
         channel_description = ""
         sender_data = dbConnect.getUserById(sender_id)
         receiver_data = dbConnect.getUserById(receiver_id)
-        channel_name = sender_data["user_name"] + ":" + receiver_data["user_name"]
+        channel_name = sender_data["user_name"] + \
+            ":" + receiver_data["user_name"]
         role = TYPE.CHAT_ADMIN
 
         result = dbConnect.addFriendAndChannel(
@@ -399,7 +401,8 @@ def create_group():
         )
 
         # チャンネル管理者登録
-        dbConnect.addChannelUser(channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
+        dbConnect.addChannelUser(
+            channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
 
         # チャンネルメンバー登録
         friends = request.form.getlist("friends")
@@ -430,7 +433,8 @@ def add_channel():
             channel_name, channel_description, TYPE.PUBLIC_CHAT
         )
         # チャンネルユーザー登録処理
-        dbConnect.addChannelUser(channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
+        dbConnect.addChannelUser(
+            channel_id[0]["current_id"], user_id, TYPE.CHAT_ADMIN)
 
         return redirect("/public")
 
