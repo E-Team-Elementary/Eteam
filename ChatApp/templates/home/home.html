@@ -127,7 +127,36 @@
               {% else %}
               <div class="messages">
                 <p class="user-name">{{ message.user_name }}</p>
-                <p class="box box-left">{{ message.content }}</p>
+                <div>
+                  <p class="box box-left">{{ message.content }}</p>
+                  <form
+                    action="/post_message_friend"
+                    method="POST"
+                    class="delete-bottom"
+                  >
+                    <input
+                      type="hidden"
+                      value="{{ message.content }}"
+                      name="message"
+                    />
+                    <input
+                      type="hidden"
+                      value="{{ channel.id }}"
+                      name="channel_id"
+                    />
+                    <input type="hidden" value="1" name="message_type" />
+                    <button
+                      class="bi bi-book-half"
+                      name="message_id"
+                      value="{{ message.id }}"
+                    >
+                      <ion-icon
+                        name="trash-bin-outline"
+                        style="color: #122543"
+                      ></ion-icon>
+                    </button>
+                  </form>
+                </div>
               </div>
               {% endif %} {% endfor %} {% else %}
               <div id="no-message"><p>まだメッセージがありません</p></div>
