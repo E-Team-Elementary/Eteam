@@ -54,8 +54,8 @@
     height: 100%;
     display: flex;
     flex-flow: column;
-    justify-content: end;
-    align-items: end;
+    justify-content: center;
+    align-items: center;
     overflow: auto;
     padding: 10px 0 10px 10px;
 }
@@ -73,7 +73,6 @@
 
 .all-button{
     display: flex;
-    flex-flow: row;
     align-items: center;
     justify-content: center;
     margin-top: 10px;
@@ -88,7 +87,7 @@
     background-color: #133D64;
     border: 1px solid white;
     cursor: pointer;
-    display: block;
+    display: inline;
 }
 
 .deny-button{
@@ -97,8 +96,8 @@
     margin: 10px;
     border-radius: 20px;
     color: white;
-    background-color: #d82c0a;
+    background-color: darkred;
     border: 1px solid white;
     cursor: pointer;
-    display: block;
+    display: inline;
 }
