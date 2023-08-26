@@ -363,6 +363,10 @@ footer {
   word-wrap: break-word;
 }
 
+.messages div {
+  display: flex;
+}
+
 .user-name {
   font-size: 8px;
   color: grey;
@@ -374,11 +378,11 @@ footer {
   align-items: center;
 }
 
-.my-messages form{
+.my-messages form {
   margin: 0;
 }
 
-.my-messages form button :hover{
+.my-messages form button :hover {
   background-color: #133d64;
   color: white;
 }
