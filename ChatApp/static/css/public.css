@@ -359,13 +359,19 @@ footer {
 
 .my-messages {
   display: flex;
+  align-items: center;
+}
+
+.my-messages form{
+  margin: 0;
 }
 
 .delete-bottom {
   display: flex;
   justify-content: center;
-  align-items: end;
+  align-items: center;
   margin-bottom: 1em;
+  margin: 0;
 }
 
 .delete-message-button {
